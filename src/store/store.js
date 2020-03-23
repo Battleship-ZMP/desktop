@@ -6,8 +6,6 @@ import { getFirestore } from "redux-firestore";
 
 const initialState = {};
 
-const middleware = [thunk.withExtraArgument({ getFirebase, getFirestore })];
-
 const composeEnhancers =
   process.env.NODE_ENV === "development"
     ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
@@ -16,7 +14,9 @@ const composeEnhancers =
 const store = createStore(
   rootReducer,
   initialState,
-  composeEnhancers(applyMiddleware(...middleware))
+  composeEnhancers(
+    applyMiddleware(thunk.withExtraArgument({ getFirebase, getFirestore }))
+  )
 );
 
 export default store;

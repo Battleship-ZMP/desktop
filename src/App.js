@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import "./App.css";
 import { Provider } from "react-redux";
 import store from "./store/store";
 import Routes from "./routes";
@@ -11,7 +10,10 @@ import "firebase/firestore";
 import { ReactReduxFirebaseProvider } from "react-redux-firebase";
 import { fbConfig, rrfProps } from "./firebaseConfig";
 
-import Navbar from "./components/Navbar";
+import "./utils/globalStyle.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+
+import Header from "./components/Navbar";
 
 firebase.initializeApp(fbConfig);
 firebase.firestore();
@@ -23,7 +25,7 @@ class App extends Component {
         <ReactReduxFirebaseProvider {...rrfProps}>
           <Router>
             <div className="App">
-              <Navbar />
+              <Header />
               <Routes />
             </div>
           </Router>
