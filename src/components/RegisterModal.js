@@ -7,6 +7,8 @@ import * as Yup from "yup";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { signUp } from "../store/actions/authActions";
+import { connect } from "react-redux";
 
 const SignUpSchema = Yup.object().shape({
   name: Yup.string().required("Your username is required"),
@@ -19,19 +21,30 @@ const SignUpSchema = Yup.object().shape({
     .min(8, "Password must contain min. 8 characters"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
-    .required("Password confirmation is required")
+    .required("Password confirmation is required"),
 });
 
 class RegisterModal extends Component {
-  state = { show: false };
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: false,
+    };
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+  }
 
-  showModal = () => {
-    this.setState({ show: true });
-  };
+  showModal() {
+    this.setState({
+      show: true,
+    });
+  }
 
-  hideModal = () => {
-    this.setState({ show: false });
-  };
+  hideModal() {
+    this.setState({
+      show: false,
+    });
+  }
 
   render() {
     return (
@@ -48,11 +61,12 @@ class RegisterModal extends Component {
               email: "",
               bio: "",
               password: "",
-              confirmPassword: ""
+              confirmPassword: "",
             }}
             validationSchema={SignUpSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
+            onSubmit={(credentials, { setSubmitting }) => {
+              console.log(this.props);
+              this.props.onSubmit(credentials);
             }}
           >
             {({ isSubmitting, isValid }) => (
@@ -75,8 +89,7 @@ class RegisterModal extends Component {
                       name="email"
                       placeholder="Username"
                     />
-                    <div className="invalid-feedback">
-                    </div>
+                    <div className="invalid-feedback"></div>
                   </div>
                   <div className="form-group">
                     <label htmlFor="bio">Short description</label>
@@ -100,14 +113,18 @@ class RegisterModal extends Component {
                     <label htmlFor="confirmPassword">Password</label>
                     <Field
                       className="form-control"
-                      type="confirmPassword"
+                      type="password"
                       name="confirmPassword"
                       placeholder="Confirm your password"
                     />
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={!isValid}
+                  >
                     Register
                   </button>
                 </Modal.Footer>
@@ -119,5 +136,7 @@ class RegisterModal extends Component {
     );
   }
 }
-
-export default RegisterModal;
+const mapDispatchToProps = (dispatch) => ({
+  onSubmit: (credentials) => dispatch(signUp(credentials)),
+});
+export default connect(null, mapDispatchToProps)(RegisterModal);

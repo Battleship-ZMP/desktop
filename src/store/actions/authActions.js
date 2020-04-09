@@ -1,15 +1,20 @@
-export const signUp = credentials => async (
-  dispatch,
-  getState,
-  { getFirebase, getFirestore }
-) => {
-  const firebase = getFirebase();
-  const firestore = getFirestore();
-  try {
-    const res = await firestore
-      .auth()
-      .createUserWithEmailAndPassword(credentials.email, credentials.password);
+import { SIGNUP_ERROR, SIGNUP_SUCCESS } from "./types";
+import firebase from "firebase/app";
 
-    console.log(res);
-  } catch (err) {}
+export const signUp = (credentials) => async (dispatch) => {
+  firebase
+    .auth()
+    .createUserWithEmailAndPassword(credentials.email, credentials.password)
+    .then((res) => {
+      console.log(res);
+      dispatch({
+        type: SIGNUP_SUCCESS,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      dispatch({
+        type: SIGNUP_ERROR,
+      });
+    });
 };
