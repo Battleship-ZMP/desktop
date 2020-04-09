@@ -65,7 +65,6 @@ class RegisterModal extends Component {
             }}
             validationSchema={SignUpSchema}
             onSubmit={(credentials, { setSubmitting }) => {
-              console.log(this.props);
               this.props.onSubmit(credentials);
             }}
           >

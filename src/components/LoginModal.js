@@ -6,24 +6,33 @@ import * as Yup from "yup";
 
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { signIn } from "../store/actions/authActions";
+import { connect } from "react-redux";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email.")
     .required("The email is required."),
-  password: Yup.string().required("The passoword is required.")
+  password: Yup.string().required("The passoword is required."),
 });
 
 class LoginModal extends Component {
-  state = { show: false };
+  constructor(props) {
+    super(props);
+    this.state = {
+      show: false,
+    };
+    this.showModal = this.showModal.bind(this);
+    this.hideModal = this.hideModal.bind(this);
+  }
 
-  showModal = () => {
+  showModal() {
     this.setState({ show: true });
-  };
+  }
 
-  hideModal = () => {
+  hideModal() {
     this.setState({ show: false });
-  };
+  }
 
   render() {
     return (
@@ -37,11 +46,11 @@ class LoginModal extends Component {
           <Formik
             initialValues={{
               email: "",
-              password: ""
+              password: "",
             }}
             validationSchema={LoginSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
+            onSubmit={(credentials, { setSubmitting }) => {
+              this.props.onSubmit(credentials);
             }}
           >
             {({ isSubmitting, isValid }) => (
@@ -67,7 +76,11 @@ class LoginModal extends Component {
                   </div>
                 </Modal.Body>
                 <Modal.Footer>
-                  <button type="submit" className="btn btn-primary">
+                  <button
+                    type="submit"
+                    className="btn btn-primary"
+                    disabled={!isValid}
+                  >
                     Login
                   </button>
                 </Modal.Footer>
@@ -80,4 +93,8 @@ class LoginModal extends Component {
   }
 }
 
-export default LoginModal;
+const mapDispatchToProps = (dispatch) => ({
+  onSubmit: (credentials) => dispatch(signIn(credentials)),
+});
+
+export default connect(null, mapDispatchToProps)(LoginModal);
