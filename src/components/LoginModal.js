@@ -17,6 +17,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 class LoginModal extends Component {
+  //TODO add error display
   constructor(props) {
     super(props);
     this.state = {

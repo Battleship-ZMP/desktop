@@ -10,17 +10,17 @@ export const fbConfig = {
   storageBucket: "coolrecipes-f4e21.appspot.com",
   messagingSenderId: "387025921582",
   appId: "1:387025921582:web:bffc515356a4005b79a1bf",
-  measurementId: "G-4BK3297DFV"
+  measurementId: "G-4BK3297DFV",
 };
 
 const rrfConfig = {
   userProfile: "users",
-  useFirestoreForProfile: true
+  useFirestoreForProfile: true,
 };
 
 export const rrfProps = {
   firebase,
   config: rrfConfig,
   dispatch: store.dispatch,
-  createFirestoreInstance
+  createFirestoreInstance,
 };
