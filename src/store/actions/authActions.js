@@ -14,11 +14,12 @@ export const signUp = (credentials) => async (dispatch) => {
     .auth()
     .createUserWithEmailAndPassword(credentials.email, credentials.password)
     .then((res) => {
+      console.log(res);
       firestore
         .collection("users")
         .doc(res.user.uid)
-        .set({ userName: credentials.userName, bio: credentials.bio });
-
+        .set({ bio: credentials.bio });
+      res.user.updateProfile(credentials.userName);
       dispatch({
         type: SIGNUP_SUCCESS,
       });
@@ -47,4 +48,13 @@ export const signIn = (credentials) => async (dispatch) => {
         payload: err,
       });
     });
+};
+
+export const signOut = () => async (dispatch) => {
+  try {
+    firebase
+      .auth()
+      .signOut()
+      .catch(() => {});
+  } catch (err) {}
 };
