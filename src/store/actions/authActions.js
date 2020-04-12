@@ -1,6 +1,8 @@
 import {
   SIGNIN_ERROR,
   SIGNIN_SUCCESS,
+  SIGNOUT_ERROR,
+  SIGNOUT_SUCCESS,
   SIGNUP_ERROR,
   SIGNUP_SUCCESS,
 } from "./types";
@@ -14,12 +16,13 @@ export const signUp = (credentials) => async (dispatch) => {
     .auth()
     .createUserWithEmailAndPassword(credentials.email, credentials.password)
     .then((res) => {
-      console.log(res);
       firestore
         .collection("users")
         .doc(res.user.uid)
         .set({ bio: credentials.bio });
-      res.user.updateProfile(credentials.userName);
+
+      firebase.updateAuth({ displayName: credentials.userName }, true);
+
       dispatch({
         type: SIGNUP_SUCCESS,
       });
@@ -51,10 +54,17 @@ export const signIn = (credentials) => async (dispatch) => {
 };
 
 export const signOut = () => async (dispatch) => {
-  try {
-    firebase
-      .auth()
-      .signOut()
-      .catch(() => {});
-  } catch (err) {}
+  firebase
+    .auth()
+    .signOut()
+    .then(() => {
+      dispatch({
+        type: SIGNOUT_SUCCESS,
+      });
+    })
+    .catch(() => {
+      dispatch({
+        type: SIGNOUT_ERROR,
+      });
+    });
 };

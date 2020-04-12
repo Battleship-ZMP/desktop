@@ -1,6 +1,8 @@
 import {
   SIGNIN_ERROR,
   SIGNIN_SUCCESS,
+  SIGNOUT_SUCCESS,
+  SIGNOUT_ERROR,
   SIGNUP_ERROR,
   SIGNUP_SUCCESS,
 } from "../actions/types";
@@ -22,6 +24,14 @@ export const authReducer = (state = initState, action) => {
         ...state,
       };
     case SIGNIN_ERROR:
+      return {
+        ...state,
+      };
+    case SIGNOUT_SUCCESS:
+      return {
+        ...state,
+      };
+    case SIGNOUT_ERROR:
       return {
         ...state,
       };
