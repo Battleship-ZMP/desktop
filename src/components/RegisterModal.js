@@ -11,7 +11,7 @@ import { signUp } from "../store/actions/authActions";
 import { connect } from "react-redux";
 
 const SignUpSchema = Yup.object().shape({
-  name: Yup.string().required("Your username is required"),
+  userName: Yup.string().required("Your username is required"),
   email: Yup.string()
     .email("Invalid email.")
     .required("The email is required."),
@@ -25,6 +25,7 @@ const SignUpSchema = Yup.object().shape({
 });
 
 class RegisterModal extends Component {
+  //TODO add error display
   constructor(props) {
     super(props);
     this.state = {
@@ -57,7 +58,7 @@ class RegisterModal extends Component {
           <Modal.Header>Register</Modal.Header>
           <Formik
             initialValues={{
-              name: "",
+              userName: "",
               email: "",
               bio: "",
               password: "",
@@ -65,7 +66,6 @@ class RegisterModal extends Component {
             }}
             validationSchema={SignUpSchema}
             onSubmit={(credentials, { setSubmitting }) => {
-              console.log(this.props);
               this.props.onSubmit(credentials);
             }}
           >
@@ -76,8 +76,8 @@ class RegisterModal extends Component {
                     <label htmlFor="name">Username</label>
                     <Field
                       className="form-control"
-                      type="name"
-                      name="name"
+                      type="userName"
+                      name="userName"
                       placeholder="Username"
                     />
                   </div>
