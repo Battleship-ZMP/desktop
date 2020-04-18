@@ -13,7 +13,7 @@ import { fbConfig, rrfProps } from "./firebaseConfig";
 import "./utils/globalStyle.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import Header from "./components/Navbar";
+import Main from "./components/Main/Main";
 
 firebase.initializeApp(fbConfig);
 firebase.firestore();
@@ -25,8 +25,7 @@ class App extends Component {
         <ReactReduxFirebaseProvider {...rrfProps}>
           <Router>
             <div className="App">
-              <Header />
-              <Routes />
+              <Main />
             </div>
           </Router>
         </ReactReduxFirebaseProvider>
