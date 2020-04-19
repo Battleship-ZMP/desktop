@@ -7,7 +7,7 @@ const Sidebar = () => {
       <div className="sidebar-heading">Cool Recipes</div>
       <div className="list-group list-group-flush">
         <Link
-          to="/"
+          to="/catalog"
           className="list-group-item list-group-item-action bg-light"
         >
           Home

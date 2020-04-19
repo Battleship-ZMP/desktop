@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import store from "../../store/store";
 import PropTypes from "prop-types";
 import "./Main.css";
@@ -13,7 +12,6 @@ import ButtonGroup from "react-bootstrap/ButtonGroup";
 import { Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Sidebar from "./Sidebar";
 import Routes from "../../routes";
 

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import store from "./store/store";
-import Routes from "./routes";
 import { BrowserRouter as Router } from "react-router-dom";
 
 import firebase from "firebase/app";
