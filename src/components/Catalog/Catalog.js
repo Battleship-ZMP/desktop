@@ -44,5 +44,5 @@ const mapStateToProps = (state) => {
 };
 export default compose(
   connect(mapStateToProps, null),
-  firestoreConnect([{ collection: "recipes" }])
+  firestoreConnect([{ collection: "recipes", limit: 6 }])
 )(Catalog);
