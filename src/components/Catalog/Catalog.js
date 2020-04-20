@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import RecipePreview from "../Recipe/RecipePreview";
 import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
+import { MDBContainer, MDBRow } from "mdbreact";
 
 class Catalog extends Component {
   constructor(props) {
@@ -25,16 +24,16 @@ class Catalog extends Component {
       return <h1>Empty</h1>;
     } else {
       return (
-        <Row>
+        <MDBRow>
           {this.props.recipes.map((recipe) => (
             <RecipePreview recipe={recipe} key={recipe.id} />
           ))}
-        </Row>
+        </MDBRow>
       );
     }
   }
   render() {
-    return <Container>{this.content()}</Container>;
+    return <MDBContainer>{this.content()}</MDBContainer>;
   }
 }
 

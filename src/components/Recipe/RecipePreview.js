@@ -1,7 +1,6 @@
 import React from "react";
-import Col from "react-bootstrap/Col";
-import Row from "react-bootstrap/Row";
 import PropTypes from "prop-types";
+import { MDBRow } from "mdbreact";
 
 const RecipePreview = (props) => {
   const recipe = props.recipe;
@@ -12,13 +11,13 @@ const RecipePreview = (props) => {
 
   return (
     <div className="col-3 border border-dark">
-      <Row>
+      <MDBRow>
         <h2 className="title">{recipe.name}</h2>
-      </Row>
-      <Row className="flex-column">
+      </MDBRow>
+      <MDBRow className="flex-column">
         <h2 className="title">Opis:</h2>
         <p>{recipe.description}</p>
-      </Row>
+      </MDBRow>
     </div>
   );
 };

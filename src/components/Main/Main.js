@@ -6,14 +6,16 @@ import "./Main.css";
 import LoginModal from "../LoginModal";
 import RegisterModal from "../RegisterModal";
 
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import { Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
 import Routes from "../../routes";
+import {
+  MDBBtn,
+  MDBBtnGroup,
+  MDBNav,
+  MDBNavbar,
+} from "mdbreact";
 
 class Header extends Component {
   constructor(props) {
@@ -51,22 +53,21 @@ class Header extends Component {
       !store.getState().firebase.auth.isEmpty &&
       store.getState().firebase.auth.isLoaded
     ) {
-      return <Button onClick={this.handleClick}>Logout</Button>;
+      return <MDBBtn onClick={this.handleClick}>Logout</MDBBtn>;
     } else {
       return (
-        <ButtonGroup>
+        <MDBBtnGroup>
           <div className="mr-3">
             <LoginModal />
           </div>
           <div>
             <RegisterModal />
           </div>
-        </ButtonGroup>
+        </MDBBtnGroup>
       );
     }
   }
 
-  // TODO navbar into separate component
   render() {
     return (
       <div
@@ -75,22 +76,22 @@ class Header extends Component {
       >
         <Sidebar />
 
+        {
+          //TODO Navbar into separate component
+        }
         <div id="page-content-wrapper">
-          <Navbar bg="light" variant="light" className="border-bottom">
-            <Button
+          <MDBNavbar light className="border-bottom">
+            <MDBBtn
               className="btn btn-primary"
               id="menu-toggle"
               onClick={this.toggleMenu}
             >
               Toggle Menu
-            </Button>
+            </MDBBtn>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto"></Nav>
-              <Nav>{this.authButtons()}</Nav>
-            </Navbar.Collapse>
-          </Navbar>
+            <MDBNav className="mr-auto"></MDBNav>
+            <MDBNav>{this.authButtons()}</MDBNav>
+          </MDBNavbar>
 
           <Routes />
         </div>
@@ -111,16 +112,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
-
-/*
- <Navbar bg="light" expand="lg">
-            <Navbar.Brand>
-              <Link to="/">CoolRecipes</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto"></Nav>
-              <Nav>{this.authButtons()}</Nav>
-            </Navbar.Collapse>
-          </Navbar>
- */
