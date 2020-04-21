@@ -9,13 +9,8 @@ import RegisterModal from "../RegisterModal";
 import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
-import Routes from "../../routes";
-import {
-  MDBBtn,
-  MDBBtnGroup,
-  MDBNav,
-  MDBNavbar,
-} from "mdbreact";
+import Routes from "../../Routes";
+import { MDBBtn, MDBBtnGroup, MDBNav, MDBNavbar } from "mdbreact";
 
 class Header extends Component {
   constructor(props) {
