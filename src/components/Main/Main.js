@@ -10,7 +10,14 @@ import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
 import Routes from "../../Routes";
-import { MDBBtn, MDBBtnGroup, MDBNav, MDBNavbar } from "mdbreact";
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBIcon,
+  MDBNav,
+  MDBNavbar,
+} from "mdbreact";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
   constructor(props) {
@@ -48,17 +55,23 @@ class Header extends Component {
       !store.getState().firebase.auth.isEmpty &&
       store.getState().firebase.auth.isLoaded
     ) {
-      return <MDBBtn onClick={this.handleClick}>Logout</MDBBtn>;
+      return (
+        <MDBContainer>
+          <Link to="/editor">
+            <MDBBtn>
+              <MDBIcon icon="plus" className="mr-1" />
+              <span>Add recipe</span>
+            </MDBBtn>
+          </Link>
+          <MDBBtn onClick={this.handleClick}>Logout</MDBBtn>
+        </MDBContainer>
+      );
     } else {
       return (
-        <MDBBtnGroup>
-          <div className="mr-3">
-            <LoginModal />
-          </div>
-          <div>
-            <RegisterModal />
-          </div>
-        </MDBBtnGroup>
+        <MDBContainer>
+          <LoginModal />
+          <RegisterModal />
+        </MDBContainer>
       );
     }
   }
