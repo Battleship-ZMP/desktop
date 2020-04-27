@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {
   MDBCard,
@@ -8,50 +8,80 @@ import {
   MDBCardImage,
 } from "mdbreact";
 import { Link } from "react-router-dom";
+import firebase from "firebase/app";
 
-const RecipePreview = (props) => {
-  const recipe = props.recipe;
+class RecipePreview extends Component {
+  constructor(props) {
+    super(props);
 
-  RecipePreview.propTypes = {
-    recipe: PropTypes.object,
-  };
+    this.state = {
+      userName: "",
+      recipe: this.props.recipe,
+    };
 
-  return (
-    <MDBCol className="my-3" lg="4" md="6">
-      <Link
-        to={{ pathname: `/recipe/${recipe.id}`, state: { recipe: recipe } }}
-        className="text-dark"
-        style={{ textDecoration: "none" }}
-      >
-        <MDBCard>
-          {/*TODO horizontal img "support"*/}
-          <MDBCardImage
-            className="img-fluid"
-            src="https://mdbootstrap.com/img/Photos/Horizontal/People/6-col/img%20%283%29.jpg"
-            alt=""
-          />
-          <MDBCardBody className="text-center">
-            <div>
-              <div className="caption grey-text">Przepis</div>
-              <div>{recipe.name}</div>
-            </div>
-            <div>
-              <div className="caption grey-text">Użytkownik</div>
-              <div>{recipe.userName}</div>
-            </div>
-            <div>
-              <div className="caption grey-text">Dodano</div>
-              <div>{recipe.date}</div>
-            </div>
-            <div>
-              <div className="caption grey-text">Ocena</div>
-              <MDBRating containerClassName="justify-content-center" />
-            </div>
-          </MDBCardBody>
-        </MDBCard>
-      </Link>
-    </MDBCol>
-  );
-};
+    this.recipe = this.state.recipe;
+  }
+
+  static get propTypes() {
+    return {
+      recipes: PropTypes.object,
+      userName: PropTypes.string,
+    };
+  }
+
+  componentDidMount() {
+    const firestore = firebase.firestore();
+
+    firestore
+      .collection("users")
+      .doc(this.recipe.userID)
+      .get()
+      .then((res) => {
+        this.setState({ userName: res.data().userName });
+      });
+  }
+
+  render() {
+    return (
+      <MDBCol className="my-3" lg="4" md="6">
+        <Link
+          to={{
+            pathname: `/recipe/${this.recipe.id}`,
+            state: { recipe: this.recipe, userName: this.state.userName },
+          }}
+          className="text-dark"
+          style={{ textDecoration: "none" }}
+        >
+          <MDBCard>
+            {/*TODO horizontal img "support"*/}
+            <MDBCardImage
+              className="img-fluid"
+              src={this.recipe.photo}
+              alt=""
+            />
+            <MDBCardBody className="text-center">
+              <div>
+                <div className="caption grey-text">Przepis</div>
+                <div>{this.recipe.name}</div>
+              </div>
+              <div>
+                <div className="caption grey-text">Użytkownik</div>
+                <div>{this.state.userName}</div>
+              </div>
+              <div>
+                <div className="caption grey-text">Dodano</div>
+                <div>{this.recipe.date}</div>
+              </div>
+              <div>
+                <div className="caption grey-text">Ocena</div>
+                <MDBRating containerClassName="justify-content-center" />
+              </div>
+            </MDBCardBody>
+          </MDBCard>
+        </Link>
+      </MDBCol>
+    );
+  }
+}
 
 export default RecipePreview;

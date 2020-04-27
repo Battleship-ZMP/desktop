@@ -6,10 +6,12 @@ class Recipe extends Component {
     super(props);
 
     this.state = {
-      recipe: this.props.location.state,
+      recipe: this.props.location.state.recipe,
+      userName: this.props.location.state.userName,
     };
 
-    this.recipe = this.state.recipe.recipe;
+    this.recipe = this.state.recipe;
+    this.userName = this.state.userName;
   }
 
   render() {
@@ -17,11 +19,7 @@ class Recipe extends Component {
       <MDBContainer style={{ padding: "5rem" }}>
         <MDBRow className="">
           <MDBCol className="" cols="12" md="8" sm="8">
-            <img
-              src="https://mdbootstrap.com/img/Photos/Horizontal/People/6-col/img%20%283%29.jpg"
-              alt=""
-              className="img-fluid"
-            />
+            <img src={this.recipe.photo} alt="" className="img-fluid" />
           </MDBCol>
           <MDBCol className="justify-center d-flex flex-column" md="4" sm="4">
             <h2 className="display-1">{this.recipe.name}</h2>
@@ -43,7 +41,10 @@ class Recipe extends Component {
           <h2 className="title">Przepis:</h2>
           <p>{this.recipe.instructions}</p>
         </MDBRow>
-        User Name
+        <MDBRow className="flex-column">
+          <h4 className="title">Autor:</h4>
+          <p>{this.userName}</p>
+        </MDBRow>
       </MDBContainer>
     );
   }

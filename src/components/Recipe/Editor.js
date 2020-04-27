@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useCallback, useEffect, useState } from "react";
 import {
   MDBBtn,
   MDBCard,
@@ -8,15 +8,18 @@ import {
   MDBCardTitle,
   MDBCol,
   MDBContainer,
-  MDBFooter,
   MDBIcon,
   MDBInput,
-  MDBModal,
   MDBRow,
 } from "mdbreact";
 import * as Yup from "yup";
 import { Formik, Field, Form } from "formik";
-
+import { connect } from "react-redux";
+import { addRecipe } from "../../store/actions/recipesActions";
+import Dropzone, { useDropzone } from "react-dropzone";
+import "./Uploader.css";
+import PropTypes from "prop-types";
+import firebase from "firebase/app";
 const AddRecipeSchema = Yup.object().shape({
   name: Yup.string().required("Tytuł jest wymagany"),
   description: Yup.string(),
@@ -26,6 +29,27 @@ const AddRecipeSchema = Yup.object().shape({
 });
 
 class Editor extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      files: [],
+    };
+
+    this.onDrop = (files) => {
+      files.map((file) => {
+        Object.assign(file, { preview: URL.createObjectURL(file) });
+      });
+      this.setState({ files });
+    };
+  }
+
+  static get propTypes() {
+    return {
+      onSubmit: PropTypes.func,
+    };
+  }
+
   render() {
     return (
       <MDBContainer fluid className="p-4">
@@ -43,8 +67,13 @@ class Editor extends Component {
             }}
             isInitialValid={false}
             validationSchema={AddRecipeSchema}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
+            onSubmit={(recipe, { setSubmitting }) => {
+              recipe.userID = firebase.auth().currentUser.uid;
+
+              this.props.onSubmit(
+                recipe,
+                this.state.files[0] ? this.state.files[0] : ""
+              );
             }}
           >
             {({ isSubmitting, isValid }) => (
@@ -116,25 +145,32 @@ class Editor extends Component {
                         )}
                       </Field>
                     </MDBCol>
-                    <MDBCol md="4">
-                      {/*TODO adding photo */}
-                      <Field name="photo">
-                        {({ field, form: { touched, errors }, meta }) => (
-                          <div>
-                            <MDBInput
-                              containerClass="mb-0 pb-0"
-                              type="text"
-                              label="Zdjęcie"
-                              {...field}
-                            />
-                            {meta.touched && meta.error && (
-                              <small className="text-danger m-0 p-0">
-                                {meta.error}
-                              </small>
+                    <MDBCol md="4" className="d-flex">
+                      <Dropzone
+                        onDrop={this.onDrop}
+                        multiple={false}
+                        accept="image/*"
+                      >
+                        {({ getRootProps, getInputProps }) => (
+                          <section className="d-flex flex-1">
+                            {this.state.files.length > 0 ? (
+                              <img
+                                className="img-fluid"
+                                src={this.state.files[0].preview}
+                              />
+                            ) : (
+                              <div {...getRootProps({ className: "dropzone" })}>
+                                <input {...getInputProps()} />
+                                <p>
+                                  Drag 'n' drop some files here, or click to
+                                  select files
+                                </p>
+                                <MDBIcon icon="cloud-upload-alt" />
+                              </div>
                             )}
-                          </div>
+                          </section>
                         )}
-                      </Field>
+                      </Dropzone>
                     </MDBCol>
                   </MDBRow>
                 </MDBCardBody>
@@ -156,5 +192,7 @@ class Editor extends Component {
     );
   }
 }
-
-export default Editor;
+const mapDispatchToProps = (dispatch) => ({
+  onSubmit: (recipe, photo) => dispatch(addRecipe(recipe, photo)),
+});
+export default connect(null, mapDispatchToProps)(Editor);

@@ -19,7 +19,7 @@ export const signUp = (credentials) => async (dispatch) => {
       firestore
         .collection("users")
         .doc(res.user.uid)
-        .set({ bio: credentials.bio });
+        .set({ bio: credentials.bio, userName: credentials.userName });
 
       firebase.updateAuth({ displayName: credentials.userName }, true);
 
