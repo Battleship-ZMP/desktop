@@ -8,14 +8,12 @@ import {
   MDBCardImage,
 } from "mdbreact";
 import { Link } from "react-router-dom";
-import firebase from "firebase/app";
 
 class RecipePreview extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      userName: "",
       recipe: this.props.recipe,
     };
 
@@ -25,20 +23,7 @@ class RecipePreview extends Component {
   static get propTypes() {
     return {
       recipes: PropTypes.object,
-      userName: PropTypes.string,
     };
-  }
-
-  componentDidMount() {
-    const firestore = firebase.firestore();
-
-    firestore
-      .collection("users")
-      .doc(this.recipe.userID)
-      .get()
-      .then((res) => {
-        this.setState({ userName: res.data().userName });
-      });
   }
 
   render() {
@@ -66,7 +51,7 @@ class RecipePreview extends Component {
               </div>
               <div>
                 <div className="caption grey-text">Użytkownik</div>
-                <div>{this.state.userName}</div>
+                <div>{this.recipe.userName}</div>
               </div>
               <div>
                 <div className="caption grey-text">Dodano</div>

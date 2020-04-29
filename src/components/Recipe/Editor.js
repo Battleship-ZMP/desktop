@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useEffect, useState } from "react";
+import React, { Component } from "react";
 import {
   MDBBtn,
   MDBCard,
@@ -16,10 +16,10 @@ import * as Yup from "yup";
 import { Formik, Field, Form } from "formik";
 import { connect } from "react-redux";
 import { addRecipe } from "../../store/actions/recipesActions";
-import Dropzone, { useDropzone } from "react-dropzone";
+import Dropzone from "react-dropzone";
 import "./Uploader.css";
 import PropTypes from "prop-types";
-import firebase from "firebase/app";
+
 const AddRecipeSchema = Yup.object().shape({
   name: Yup.string().required("Tytuł jest wymagany"),
   description: Yup.string(),
@@ -47,6 +47,7 @@ class Editor extends Component {
   static get propTypes() {
     return {
       onSubmit: PropTypes.func,
+      test: PropTypes.func,
     };
   }
 
@@ -63,13 +64,10 @@ class Editor extends Component {
               description: "",
               ingredients: "",
               instructions: "",
-              photo: "",
             }}
             isInitialValid={false}
             validationSchema={AddRecipeSchema}
             onSubmit={(recipe, { setSubmitting }) => {
-              recipe.userID = firebase.auth().currentUser.uid;
-
               this.props.onSubmit(
                 recipe,
                 this.state.files[0] ? this.state.files[0] : ""
@@ -157,6 +155,7 @@ class Editor extends Component {
                               <img
                                 className="img-fluid"
                                 src={this.state.files[0].preview}
+                                alt={"Uploaded img"}
                               />
                             ) : (
                               <div {...getRootProps({ className: "dropzone" })}>

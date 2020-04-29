@@ -2,15 +2,18 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import RecipePreview from "../Recipe/RecipePreview";
-import { firestoreConnect } from "react-redux-firebase";
 import { compose } from "redux";
 import { MDBContainer, MDBRow } from "mdbreact";
+import { fetchRecipes } from "../../store/actions/recipesActions";
 
-class Catalog extends Component {
+class List extends Component {
   constructor(props) {
     super(props);
 
     this.content = this.content.bind(this);
+  }
+  componentDidMount() {
+    this.props.fetchRecipes();
   }
 
   static get propTypes() {
@@ -38,11 +41,12 @@ class Catalog extends Component {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state.recipes.data);
   return {
-    recipes: state.firestore.ordered.recipes,
+    recipes: state.recipes.data,
   };
 };
-export default compose(
-  connect(mapStateToProps, null),
-  firestoreConnect([{ collection: "recipes", limit: 6 }])
-)(Catalog);
+const mapDispatchToProps = (dispatch) => ({
+  fetchRecipes: () => dispatch(fetchRecipes()),
+});
+export default compose(connect(mapStateToProps, mapDispatchToProps))(List);
