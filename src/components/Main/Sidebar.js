@@ -13,7 +13,7 @@ class Sidebar extends Component {
         <div>
           <Link
             to={{
-              pathname: `/cookbook/owned`,
+              pathname: `/cookbook/created`,
               state: {
                 filter: ["userID", "==", `${firebase.auth().currentUser.uid}`],
               },
@@ -23,7 +23,7 @@ class Sidebar extends Component {
             Własne przepisy
           </Link>
           <Link
-            to="/cookbook/saved"
+            to="/cookbook/favorites"
             className="list-group-item list-group-item-action bg-light"
           >
             Zapisane przepisy

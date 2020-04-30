@@ -5,36 +5,13 @@ import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
 
-export const fetchOwnedRecipes = () => async (dispatch) => {
-  const firestore = firebase.firestore();
-
-  firestore
-    .collection("recipes")
-    .where("userID", "==", firebase.auth().currentUser.uid)
-    .get()
-    .then((res) => {
-      const recipes = [];
-
-      res.forEach((doc) => {
-        const recipe = doc.data();
-        recipe.id = doc.id;
-
-        recipes.push(recipe);
-      });
-
-      dispatch({
-        type: FETCHRECIPES_SUCCESS,
-        payload: recipes,
-      });
-    });
-};
-
-export const fetchRecipes = () => async (dispatch) => {
+export const fetchRecipes = (filter) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
 
   firestore
     .collection("recipes")
+    .where(filter[0], filter[1], filter[2])
     .get()
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
@@ -61,7 +38,16 @@ export const fetchRecipes = () => async (dispatch) => {
 export const addRecipe = (recipe, photo) => async (dispatch) => {
   const firestore = firebase.firestore();
 
+  function getDate() {
+    var formatter = new Intl.DateTimeFormat("pl");
+    const now = new Date();
+    var date = formatter.format(now);
+    date = date + " " + now.getHours() + ":" + now.getMinutes();
+    return date;
+  }
+
   recipe.userID = firebase.auth().currentUser.uid;
+  recipe.date = getDate();
 
   firestore
     .collection("recipes")

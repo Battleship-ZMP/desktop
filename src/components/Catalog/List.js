@@ -1,19 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import RecipePreview from "../Recipe/RecipePreview";
-import { compose } from "redux";
 import { MDBContainer, MDBRow } from "mdbreact";
-import { fetchRecipes } from "../../store/actions/recipesActions";
 
 class List extends Component {
   constructor(props) {
     super(props);
 
     this.content = this.content.bind(this);
-  }
-  componentDidMount() {
-    this.props.fetchRecipes();
   }
 
   static get propTypes() {
@@ -23,9 +17,11 @@ class List extends Component {
   }
 
   content() {
-    if (!this.props.recipes) {
-      return <h1>Empty</h1>;
-    } else {
+    console.log(this.props.recipes);
+    if (
+      typeof this.props.recipes !== "undefined" &&
+      this.props.recipes.length !== 0
+    ) {
       return (
         <MDBRow>
           {this.props.recipes.map((recipe) => (
@@ -33,6 +29,8 @@ class List extends Component {
           ))}
         </MDBRow>
       );
+    } else {
+      return <h1>Empty</h1>;
     }
   }
   render() {
@@ -40,13 +38,4 @@ class List extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  console.log(state.recipes.data);
-  return {
-    recipes: state.recipes.data,
-  };
-};
-const mapDispatchToProps = (dispatch) => ({
-  fetchRecipes: () => dispatch(fetchRecipes()),
-});
-export default compose(connect(mapStateToProps, mapDispatchToProps))(List);
+export default List;

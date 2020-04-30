@@ -9,7 +9,7 @@ import RegisterModal from "../RegisterModal";
 import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
-import Routes from "../../Routes";
+import Routes from "../../Router/Routes";
 import {
   MDBBtn,
   MDBContainer,
