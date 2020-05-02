@@ -5,9 +5,11 @@ import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
 
-export const fetchRecipes = (filter) => async (dispatch) => {
+export const fetchRecipes = (filter, searchString) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
+
+  console.log(searchString);
 
   firestore
     .collection("recipes")

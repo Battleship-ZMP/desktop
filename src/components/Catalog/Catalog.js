@@ -1,9 +1,10 @@
 import React, { Component } from "react";
-import { MDBContainer } from "mdbreact";
+import { MDBContainer, MDBRow } from "mdbreact";
 import List from "./List";
 import { fetchRecipes } from "../../store/actions/recipesActions";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import SearchBar from "./SearchBar";
 
 class Catalog extends Component {
   constructor(props) {
@@ -20,14 +21,10 @@ class Catalog extends Component {
     };
   }
 
-  getSearch(search) {
-    this.setState({});
-  }
-
   render() {
     return (
       <MDBContainer fluid>
-        <h1>Catalog</h1>
+        <SearchBar />
         <List recipes={this.props.recipes} />
       </MDBContainer>
     );
