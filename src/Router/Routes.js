@@ -6,19 +6,34 @@ import Editor from "../components/Recipe/Editor";
 import { fetchRecipes } from "../store/actions/recipesActions";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import Created from "../components/Cookbook/Created";
-import Favorites from "../components/Cookbook/Favorites";
 import PrivateRoute from "./PrivateRoute";
+import firebase from "firebase/app";
 
 class Routes extends Component {
   render() {
     return (
       <div>
-        <Route exact path="/" component={Catalog} />
+        <Route
+          exact
+          path="/"
+          render={(props) => <Catalog {...props} filter={["name", ">", ""]} />}
+        />
         <Route path="/recipe/:id" component={Recipe} />
         <PrivateRoute path="/editor" component={Editor} />
-        <PrivateRoute path="/cookbook/created" component={Created} />
-        <PrivateRoute path="/cookbook/favorites" component={Favorites} />
+        <PrivateRoute
+          path="/cookbook/created"
+          component={Catalog}
+          filter={["userID", "==", firebase.auth().currentUser.uid]}
+        />
+        <PrivateRoute
+          path="/cookbook/favorites"
+          component={Catalog}
+          filter={[
+            "savedByUsers",
+            "array-contains",
+            firebase.auth().currentUser.uid,
+          ]}
+        />
         <Route render={() => <Redirect to="/" />} />
       </div>
     );

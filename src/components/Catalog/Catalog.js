@@ -9,15 +9,19 @@ class Catalog extends Component {
   constructor(props) {
     super(props);
 
-    const filter = ["name", ">", ""];
-    this.props.fetchRecipes(filter);
+    this.props.fetchRecipes(this.props.filter);
   }
 
   static get propTypes() {
     return {
       fetchRecipes: PropTypes.func,
       recipes: PropTypes.array,
+      filter: PropTypes.array,
     };
+  }
+
+  getSearch(search) {
+    this.setState({});
   }
 
   render() {
@@ -31,7 +35,6 @@ class Catalog extends Component {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state.recipes.data);
   return {
     recipes: state.recipes.data,
   };

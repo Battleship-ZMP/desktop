@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import store from "../../store/store";
-import firebase from "firebase/app";
 
 class Sidebar extends Component {
   protectedLinks() {
@@ -12,12 +11,7 @@ class Sidebar extends Component {
       return (
         <div>
           <Link
-            to={{
-              pathname: `/cookbook/created`,
-              state: {
-                filter: ["userID", "==", `${firebase.auth().currentUser.uid}`],
-              },
-            }}
+            to="/cookbook/created"
             className="list-group-item list-group-item-action bg-light"
           >
             Własne przepisy

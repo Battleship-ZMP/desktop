@@ -17,7 +17,6 @@ class List extends Component {
   }
 
   content() {
-    console.log(this.props.recipes);
     if (
       typeof this.props.recipes !== "undefined" &&
       this.props.recipes.length !== 0
