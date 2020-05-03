@@ -5,11 +5,24 @@ import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
 
+export const deleteRecipe = (recipeID) => async (dispatch) => {
+  const firestore = firebase.firestore();
+
+  firestore
+    .collection("recipes")
+    .doc(recipeID)
+    .delete()
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export const fetchRecipes = (filter, searchString) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
-
-  console.log(searchString);
 
   firestore
     .collection("recipes")
