@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBContainer, MDBRow } from "mdbreact";
+import { MDBContainer } from "mdbreact";
 import List from "./List";
 import { fetchRecipes } from "../../store/actions/recipesActions";
 import { connect } from "react-redux";
