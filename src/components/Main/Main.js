@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import store from "../../store/store";
 import PropTypes from "prop-types";
 import "./Main.css";
@@ -7,15 +6,18 @@ import "./Main.css";
 import LoginModal from "../LoginModal";
 import RegisterModal from "../RegisterModal";
 
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import ButtonGroup from "react-bootstrap/ButtonGroup";
-import { Button } from "react-bootstrap";
 import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import Sidebar from "./Sidebar";
-import Routes from "../../routes";
+import Routes from "../../Router/Routes";
+import {
+  MDBBtn,
+  MDBContainer,
+  MDBIcon,
+  MDBNav,
+  MDBNavbar,
+} from "mdbreact";
+import { Link } from "react-router-dom";
 
 class Header extends Component {
   constructor(props) {
@@ -53,22 +55,27 @@ class Header extends Component {
       !store.getState().firebase.auth.isEmpty &&
       store.getState().firebase.auth.isLoaded
     ) {
-      return <Button onClick={this.handleClick}>Logout</Button>;
+      return (
+        <MDBContainer>
+          <Link to="/editor">
+            <MDBBtn>
+              <MDBIcon icon="plus" className="mr-1" />
+              <span>Add recipe</span>
+            </MDBBtn>
+          </Link>
+          <MDBBtn onClick={this.handleClick}>Logout</MDBBtn>
+        </MDBContainer>
+      );
     } else {
       return (
-        <ButtonGroup>
-          <div className="mr-3">
-            <LoginModal />
-          </div>
-          <div>
-            <RegisterModal />
-          </div>
-        </ButtonGroup>
+        <MDBContainer>
+          <LoginModal />
+          <RegisterModal />
+        </MDBContainer>
       );
     }
   }
 
-  // TODO navbar into separate component
   render() {
     return (
       <div
@@ -77,22 +84,22 @@ class Header extends Component {
       >
         <Sidebar />
 
+        {
+          //TODO Navbar into separate component
+        }
         <div id="page-content-wrapper">
-          <Navbar bg="light" variant="light" className="border-bottom">
-            <Button
+          <MDBNavbar light className="border-bottom">
+            <MDBBtn
               className="btn btn-primary"
               id="menu-toggle"
               onClick={this.toggleMenu}
             >
               Toggle Menu
-            </Button>
+            </MDBBtn>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto"></Nav>
-              <Nav>{this.authButtons()}</Nav>
-            </Navbar.Collapse>
-          </Navbar>
+            <MDBNav className="mr-auto"></MDBNav>
+            <MDBNav>{this.authButtons()}</MDBNav>
+          </MDBNavbar>
 
           <Routes />
         </div>
@@ -113,16 +120,3 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header);
-
-/*
- <Navbar bg="light" expand="lg">
-            <Navbar.Brand>
-              <Link to="/">CoolRecipes</Link>
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="mr-auto"></Nav>
-              <Nav>{this.authButtons()}</Nav>
-            </Navbar.Collapse>
-          </Navbar>
- */

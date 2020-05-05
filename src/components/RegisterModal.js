@@ -5,10 +5,15 @@ import React, { Component } from "react";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import { signUp } from "../store/actions/authActions";
 import { connect } from "react-redux";
+import {
+  MDBBtn,
+  MDBModal,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBModalHeader,
+} from "mdbreact";
 
 const SignUpSchema = Yup.object().shape({
   userName: Yup.string().required("Your username is required"),
@@ -31,31 +36,22 @@ class RegisterModal extends Component {
     this.state = {
       show: false,
     };
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  showModal() {
-    this.setState({
-      show: true,
-    });
-  }
-
-  hideModal() {
-    this.setState({
-      show: false,
-    });
+  toggle() {
+    this.setState(this.state.show ? { show: false } : { show: true });
   }
 
   render() {
     return (
       <div>
-        <Button variant="primary" onClick={this.showModal}>
+        <MDBBtn variant="primary" onClick={this.toggle}>
           Register
-        </Button>
+        </MDBBtn>
 
-        <Modal show={this.state.show} onHide={this.hideModal}>
-          <Modal.Header>Register</Modal.Header>
+        <MDBModal isOpen={this.state.show} toggle={this.toggle}>
+          <MDBModalHeader>Register</MDBModalHeader>
           <Formik
             initialValues={{
               userName: "",
@@ -71,7 +67,7 @@ class RegisterModal extends Component {
           >
             {({ isSubmitting, isValid }) => (
               <Form>
-                <Modal.Body>
+                <MDBModalBody>
                   <div className="form-group">
                     <label htmlFor="name">Username</label>
                     <Field
@@ -118,8 +114,8 @@ class RegisterModal extends Component {
                       placeholder="Confirm your password"
                     />
                   </div>
-                </Modal.Body>
-                <Modal.Footer>
+                </MDBModalBody>
+                <MDBModalFooter>
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -127,11 +123,11 @@ class RegisterModal extends Component {
                   >
                     Register
                   </button>
-                </Modal.Footer>
+                </MDBModalFooter>
               </Form>
             )}
           </Formik>
-        </Modal>
+        </MDBModal>
       </div>
     );
   }

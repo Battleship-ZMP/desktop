@@ -4,10 +4,15 @@ import React, { Component } from "react";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
 
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import { signIn } from "../store/actions/authActions";
 import { connect } from "react-redux";
+import {
+  MDBBtn,
+  MDBModal,
+  MDBModalBody,
+  MDBModalFooter,
+  MDBModalHeader,
+} from "mdbreact";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -23,27 +28,20 @@ class LoginModal extends Component {
     this.state = {
       show: false,
     };
-    this.showModal = this.showModal.bind(this);
-    this.hideModal = this.hideModal.bind(this);
+    this.toggle = this.toggle.bind(this);
   }
 
-  showModal() {
-    this.setState({ show: true });
-  }
-
-  hideModal() {
-    this.setState({ show: false });
+  toggle() {
+    this.setState(this.state.show ? { show: false } : { show: true });
   }
 
   render() {
     return (
       <div>
-        <Button variant="primary" onClick={this.showModal}>
-          Login
-        </Button>
+        <MDBBtn onClick={this.toggle}>Login</MDBBtn>
 
-        <Modal show={this.state.show} onHide={this.hideModal}>
-          <Modal.Header>Login</Modal.Header>
+        <MDBModal isOpen={this.state.show} toggle={this.toggle}>
+          <MDBModalHeader>Login</MDBModalHeader>
           <Formik
             initialValues={{
               email: "",
@@ -56,7 +54,7 @@ class LoginModal extends Component {
           >
             {({ isSubmitting, isValid }) => (
               <Form>
-                <Modal.Body>
+                <MDBModalBody>
                   <div className="form-group">
                     <label htmlFor="email">Email</label>
                     <Field
@@ -75,8 +73,8 @@ class LoginModal extends Component {
                       placeholder="Your password..."
                     />
                   </div>
-                </Modal.Body>
-                <Modal.Footer>
+                </MDBModalBody>
+                <MDBModalFooter>
                   <button
                     type="submit"
                     className="btn btn-primary"
@@ -84,11 +82,11 @@ class LoginModal extends Component {
                   >
                     Login
                   </button>
-                </Modal.Footer>
+                </MDBModalFooter>
               </Form>
             )}
           </Formik>
-        </Modal>
+        </MDBModal>
       </div>
     );
   }
