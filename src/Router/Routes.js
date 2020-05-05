@@ -22,17 +22,25 @@ class Routes extends Component {
         <PrivateRoute path="/editor" component={Editor} />
         <PrivateRoute
           path="/cookbook/created"
-          component={Catalog}
-          filter={["userID", "==", firebase.auth().currentUser.uid]}
+          render={(props) => (
+            <Catalog
+              {...props}
+              filter={["name", "==", firebase.auth().currentUser.uid]}
+            />
+          )}
         />
         <PrivateRoute
           path="/cookbook/favorites"
-          component={Catalog}
-          filter={[
-            "savedByUsers",
-            "array-contains",
-            firebase.auth().currentUser.uid,
-          ]}
+          render={(props) => (
+            <Catalog
+              {...props}
+              filter={[
+                "savedByUsers",
+                "array-contains",
+                firebase.auth().currentUser.uid,
+              ]}
+            />
+          )}
         />
         <Route render={() => <Redirect to="/" />} />
       </div>
