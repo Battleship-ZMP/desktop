@@ -32,7 +32,7 @@ class RecipePreview extends Component {
         <Link
           to={{
             pathname: `/recipe/${this.recipe.id}`,
-            state: { recipe: this.recipe, userName: this.state.userName },
+            state: { recipe: this.recipe },
           }}
           className="text-dark"
           style={{ textDecoration: "none" }}

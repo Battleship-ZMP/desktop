@@ -5,6 +5,44 @@ import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
 
+export const unSaveRecipe = (recipeID) => async (dispatch) => {
+  const firestore = firebase.firestore();
+
+  firestore
+    .collection("recipes")
+    .doc(recipeID)
+    .update({
+      savedByUsers: firebase.firestore.FieldValue.arrayRemove(
+        firebase.auth().currentUser.uid
+      ),
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const saveRecipe = (recipeID) => async (dispatch) => {
+  const firestore = firebase.firestore();
+
+  firestore
+    .collection("recipes")
+    .doc(recipeID)
+    .update({
+      savedByUsers: firebase.firestore.FieldValue.arrayUnion(
+        firebase.auth().currentUser.uid
+      ),
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export const deleteRecipe = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
 
