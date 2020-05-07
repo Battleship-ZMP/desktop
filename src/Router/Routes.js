@@ -3,9 +3,6 @@ import { Redirect, Route } from "react-router-dom";
 import Catalog from "../components/Catalog/Catalog";
 import Recipe from "../components/Recipe/Recipe";
 import Editor from "../components/Recipe/Editor";
-import { fetchRecipes } from "../store/actions/recipesActions";
-import { compose } from "redux";
-import { connect } from "react-redux";
 import PrivateRoute from "./PrivateRoute";
 import firebase from "firebase/app";
 import store from "../store/store";
@@ -34,7 +31,7 @@ class Routes extends Component {
         <Route
           exact
           path="/"
-          render={(props) => <Catalog {...props} filter={["name", ">", ""]} />}
+          render={(props) => <Catalog {...props} />}
         />
         <Route path="/recipe/:id" component={Recipe} />
         <PrivateRoute path="/editor" component={Editor} />
@@ -54,8 +51,4 @@ class Routes extends Component {
   }
 }
 
-const mapDispatchToProps = (dispatch) => ({
-  fetchRecipes: () => dispatch(fetchRecipes()),
-});
-
-export default compose(connect(null, mapDispatchToProps))(Routes);
+export default Routes;

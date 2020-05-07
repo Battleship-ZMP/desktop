@@ -58,13 +58,45 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
     });
 };
 
-export const fetchRecipes = (filter, searchString) => async (dispatch) => {
+export const fetchAllRecipes = (order) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const recipes = [];
+
+  firestore
+    .collection("recipes")
+    .orderBy(order[0], order[1])
+    .limit(6)
+    .get()
+    .then(async (recipesQuery) => {
+      for (const doc of recipesQuery.docs) {
+        const recipe = doc.data();
+        recipe.id = doc.id;
+
+        await firestore
+          .collection("users")
+          .doc(doc.data().userID)
+          .get()
+          .then((author) => {
+            recipe.userName = author.data().userName;
+          });
+
+        recipes.push(recipe);
+      }
+      dispatch({
+        type: FETCHRECIPES_SUCCESS,
+        payload: recipes,
+      });
+    });
+};
+
+export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
 
   firestore
     .collection("recipes")
     .where(filter[0], filter[1], filter[2])
+    .orderBy(order[0], order[1])
     .get()
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
