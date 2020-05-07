@@ -9,6 +9,7 @@ import {
   MDBDropdownMenu,
   MDBDropdownToggle,
   MDBFormInline,
+  MDBIcon,
   MDBInput,
   MDBRow,
 } from "mdbreact";
@@ -19,24 +20,40 @@ class SearchBar extends Component {
 
     this.state = {
       searchString: "",
+      directionStr: "asc",
+      fieldPath: "name",
     };
 
-    this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleSort = this.handleSort.bind(this);
+    this.handleDirectionStrChange = this.handleDirectionStrChange.bind(this);
+    this.handleFieldPathChange = this.handleFieldPathChange.bind(this);
   }
 
   handleChange(e) {
     this.setState({ searchString: e.target.value });
   }
 
-  handleClick(e) {
-    console.log(this.state.searchString);
-    e.preventDefault();
+  handleSort() {
+    this.props.handleSort([this.state.fieldPath, this.state.directionStr]);
   }
 
-  handleSort(order) {
-    this.props.handleSort(order);
+  handleFieldPathChange(fieldPath) {
+    this.setState({ fieldPath: fieldPath }, () => {
+      this.handleSort();
+    });
+  }
+
+  handleDirectionStrChange() {
+    const directionStr = this.state.directionStr === "asc" ? "desc" : "asc";
+    this.setState(
+      {
+        directionStr: directionStr,
+      },
+      () => {
+        this.handleSort();
+      }
+    );
   }
 
   render() {
@@ -44,32 +61,39 @@ class SearchBar extends Component {
       <MDBRow className={"d-flex justify-content-center"}>
         <MDBCol md="8" className="d-flex align-content-center">
           <MDBBtnGroup className="d-flex align-items-center">
-            <MDBDropdown className="m-0">
+            <MDBDropdown className="m-0 mr-2">
               <MDBDropdownToggle
                 caret
-                className="mr-4 d-flex align-items-center"
+                className="m-0 d-flex align-items-center h-100"
                 color="info"
               >
-                Dropdown
+                Sortowanie
               </MDBDropdownToggle>
               <MDBDropdownMenu basic color="info">
                 <MDBDropdownItem
-                  onClick={() => this.handleSort(["name", "asc"])}
+                  onClick={() => this.handleFieldPathChange("name")}
                 >
                   Po nazwie
                 </MDBDropdownItem>
                 <MDBDropdownItem
-                  onClick={() => this.handleSort(["rating", "asc"])}
+                  onClick={() => this.handleFieldPathChange("rating")}
                 >
                   Po ocenie
                 </MDBDropdownItem>
                 <MDBDropdownItem
-                  onClick={() => this.handleSort(["date", "asc"])}
+                  onClick={() => this.handleFieldPathChange("date")}
                 >
                   Po dacie
                 </MDBDropdownItem>
               </MDBDropdownMenu>
             </MDBDropdown>
+            <MDBBtn color="info" onClick={this.handleDirectionStrChange}>
+              <MDBIcon
+                icon={
+                  this.state.directionStr === "asc" ? "caret-up" : "caret-down"
+                }
+              />
+            </MDBBtn>
           </MDBBtnGroup>
           <form
             className="input-group md-form form-sm form-1 pl-0"

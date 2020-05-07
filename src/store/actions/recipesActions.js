@@ -61,7 +61,6 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
 export const fetchAllRecipes = (order) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
-    console.log(order);
 
   firestore
     .collection("recipes")
@@ -93,8 +92,6 @@ export const fetchAllRecipes = (order) => async (dispatch) => {
 export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
-
-  console.log(order);
 
   firestore
     .collection("recipes")
