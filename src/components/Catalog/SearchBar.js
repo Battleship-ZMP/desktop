@@ -1,5 +1,17 @@
 import React, { Component } from "react";
-import { MDBBtn, MDBCol, MDBContainer } from "mdbreact";
+import {
+  MDBBtn,
+  MDBBtnGroup,
+  MDBCol,
+  MDBContainer,
+  MDBDropdown,
+  MDBDropdownItem,
+  MDBDropdownMenu,
+  MDBDropdownToggle,
+  MDBFormInline,
+  MDBInput,
+  MDBRow,
+} from "mdbreact";
 
 class SearchBar extends Component {
   constructor(props) {
@@ -11,6 +23,7 @@ class SearchBar extends Component {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
 
   handleChange(e) {
@@ -22,10 +35,42 @@ class SearchBar extends Component {
     e.preventDefault();
   }
 
+  handleSort(order) {
+    this.props.handleSort(order);
+  }
+
   render() {
     return (
-      <MDBContainer fluid className={"d-flex justify-content-center"}>
-        <MDBCol md="6">
+      <MDBRow className={"d-flex justify-content-center"}>
+        <MDBCol md="8" className="d-flex align-content-center">
+          <MDBBtnGroup className="d-flex align-items-center">
+            <MDBDropdown className="m-0">
+              <MDBDropdownToggle
+                caret
+                className="mr-4 d-flex align-items-center"
+                color="info"
+              >
+                Dropdown
+              </MDBDropdownToggle>
+              <MDBDropdownMenu basic color="info">
+                <MDBDropdownItem
+                  onClick={() => this.handleSort(["name", "asc"])}
+                >
+                  Po nazwie
+                </MDBDropdownItem>
+                <MDBDropdownItem
+                  onClick={() => this.handleSort(["rating", "asc"])}
+                >
+                  Po ocenie
+                </MDBDropdownItem>
+                <MDBDropdownItem
+                  onClick={() => this.handleSort(["date", "asc"])}
+                >
+                  Po dacie
+                </MDBDropdownItem>
+              </MDBDropdownMenu>
+            </MDBDropdown>
+          </MDBBtnGroup>
           <form
             className="input-group md-form form-sm form-1 pl-0"
             onSubmit={this.handleClick}
@@ -50,7 +95,7 @@ class SearchBar extends Component {
             />
           </form>
         </MDBCol>
-      </MDBContainer>
+      </MDBRow>
     );
   }
 }
