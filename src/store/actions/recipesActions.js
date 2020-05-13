@@ -97,6 +97,7 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
     .collection("recipes")
     .where(filter[0], filter[1], filter[2])
     .orderBy(order[0], order[1])
+    .limit(6)
     .get()
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
@@ -131,6 +132,8 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
     return date;
   }
 
+  recipe.rating = [];
+  recipe.savedByUsers = [];
   recipe.userID = firebase.auth().currentUser.uid;
   recipe.date = getDate();
 

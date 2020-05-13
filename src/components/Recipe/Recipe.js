@@ -3,7 +3,7 @@ import { MDBCol, MDBContainer, MDBRating, MDBRow, MDBBtn } from "mdbreact";
 import firebase from "firebase/app";
 import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { saveRecipe, unSaveRecipe } from "../../store/actions/recipesActions";
 import store from "../../store/store";
@@ -124,7 +124,14 @@ class Recipe extends Component {
         </MDBRow>
         <MDBRow className="flex-column">
           <h4 className="title">Autor:</h4>
-          <p>{this.recipe.userName}</p>
+          <Link
+            to={{
+              pathname: `/user/${this.recipe.userID}`,
+              state: { userID: this.recipe.userID },
+            }}
+          >
+            {this.recipe.userName}
+          </Link>
         </MDBRow>
       </MDBContainer>
     );
