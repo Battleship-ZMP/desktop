@@ -41,7 +41,7 @@ class Profile extends React.Component {
 
   render() {
     return (
-      <MDBContainer fluid>
+      <MDBContainer fluid className="p-4">
         <UserHeader profile={this.props.profile} />
         {this.content()}
       </MDBContainer>

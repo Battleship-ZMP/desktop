@@ -14,23 +14,21 @@ class UserHeader extends React.Component {
           <figure className="figure">
             <img
               src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/8-col/img%20(73).jpg"
-              className="rounded figure-img img-fluid z-depth-1"
+              className="rounded-circle figure-img img-fluid z-depth-1"
               alt=""
-              style={{ width: "200px" }}
+              style={{ width: "200px", height: "200px" }}
             />
             <figcaption className="figure-caption">
-              <title>{this.props.profile.userName}</title>
+              <h3>{this.props.profile.userName}</h3>
             </figcaption>
           </figure>
         </div>
       );
     } else {
-      console.log("asdfasdfsdf")
       return (
         <div className="d-flex justify-content-center align-items-center">
           <div className="spinner-border" role="status">
             <span className="sr-only">Loading...</span>
-            <h1>asdfasdfsadfasdfsfd</h1>
           </div>
         </div>
       );

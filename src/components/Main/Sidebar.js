@@ -1,8 +1,30 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import store from "../../store/store";
+import firebase from "firebase/app";
+import { connect } from "react-redux";
 
 class Sidebar extends Component {
+  profileLink() {
+    if (
+      !store.getState().firebase.auth.isEmpty &&
+      store.getState().firebase.auth.isLoaded
+    ) {
+      const currentUser = firebase.auth().currentUser;
+      return (
+        <Link
+          to={{
+            pathname: `/user/${currentUser.uid}`,
+            state: { userID: currentUser.uid },
+          }}
+          className="list-group-item list-group-item-action bg-light"
+        >
+          {this.props.profile.userName}
+        </Link>
+      );
+    }
+  }
+
   protectedLinks() {
     if (
       !store.getState().firebase.auth.isEmpty &&
@@ -26,11 +48,13 @@ class Sidebar extends Component {
       );
     }
   }
+
   render() {
     return (
       <div className="bg-light border-right" id="sidebar-wrapper">
         <div className="sidebar-heading">Cool Recipes</div>
         <div className="list-group list-group-flush ">
+          {this.profileLink()}
           <Link
             to="/"
             className="list-group-item list-group-item-action bg-light"
@@ -44,4 +68,4 @@ class Sidebar extends Component {
   }
 }
 
-export default Sidebar;
+export default connect(({ firebase: { profile } }) => ({ profile }))(Sidebar);

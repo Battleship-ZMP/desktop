@@ -4,8 +4,6 @@ import { FETCHPROFILE_SUCCESS } from "./types";
 export const fetchProfile = (userID) => async (dispatch) => {
   const firestore = firebase.firestore();
 
-
-
   firestore
     .collection("users")
     .doc(userID)
