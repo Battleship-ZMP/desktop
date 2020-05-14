@@ -1,5 +1,6 @@
 import React from "react";
 import { MDBContainer } from "mdbreact";
+import "../../utils/Avatar.css";
 
 class UserHeader extends React.Component {
   constructor(props) {
@@ -7,17 +8,31 @@ class UserHeader extends React.Component {
     this.content = this.content.bind(this);
   }
 
+  getAvatar() {
+    if (typeof this.props.profile.photo !== "undefined") {
+      return (
+        <img
+          src={this.props.profile.photo}
+          className="rounded-circle figure-img img-fluid z-depth-1"
+          alt=""
+          style={{ width: "100px", height: "100px" }}
+        />
+      );
+    } else {
+      return (
+        <div className="avatar-circle">
+          <div className="initials">{this.props.profile.userName.charAt(0)}</div>
+        </div>
+      );
+    }
+  }
+
   content() {
     if (typeof this.props.profile !== "undefined") {
       return (
         <div>
-          <figure className="figure">
-            <img
-              src="https://mdbootstrap.com/img/Photos/Horizontal/Nature/8-col/img%20(73).jpg"
-              className="rounded-circle figure-img img-fluid z-depth-1"
-              alt=""
-              style={{ width: "200px", height: "200px" }}
-            />
+          <figure className="figure d-flex flex-column align-items-center">
+            {this.getAvatar()}
             <figcaption className="figure-caption">
               <h3>{this.props.profile.userName}</h3>
             </figcaption>
