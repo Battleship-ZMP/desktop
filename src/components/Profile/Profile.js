@@ -6,19 +6,34 @@ import { fetchProfile } from "../../store/actions/profileActions";
 import List from "../Catalog/List";
 import { fetchFilteredRecipes } from "../../store/actions/recipesActions";
 import store from "../../store/store";
-import * as firebase from "firebase";
+import firebase from "firebase/app";
 import Settings from "./Settings";
 
 class Profile extends React.Component {
   constructor(props) {
     super(props);
 
-    this.content = this.content.bind(this);
-    console.log(this.props.location.state);
-    this.userID = this.props.location.state.userID;
-    this.props.fetchProfile(this.userID);
+    this.state = {
+      userID: this.props.location.state.userID,
+    };
 
-    const filter = ["userID", "==", this.userID];
+    this.fetchData();
+
+    this.content = this.content.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.location.state.userID !== this.props.location.state.userID) {
+      this.setState({ userID: this.props.location.state.userID }, () => {
+        this.fetchData();
+      });
+    }
+  }
+
+  fetchData() {
+    this.props.fetchProfile(this.state.userID);
+
+    const filter = ["userID", "==", this.state.userID];
     const order = ["rating", "asc"];
     this.props.fetchFilteredRecipes(filter, order);
   }
@@ -29,7 +44,7 @@ class Profile extends React.Component {
         store.getState().firebase.auth.isLoaded) ||
       this.userID === firebase.auth().currentUser.uid
     ) {
-      if (this.userID === firebase.auth().currentUser.uid) {
+      if (this.state.userID === firebase.auth().currentUser.uid) {
         return <Settings />;
       } else {
         return <List recipes={this.props.recipes} />;
