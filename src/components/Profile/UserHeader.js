@@ -21,7 +21,7 @@ class UserHeader extends React.Component {
     } else {
       return (
         <div className="avatar-circle">
-          <div className="initials">{this.props.profile.userName.charAt(0)}</div>
+          <div className="initials">{this.props.profile.userName.charAt(0).toUpperCase()}</div>
         </div>
       );
     }
