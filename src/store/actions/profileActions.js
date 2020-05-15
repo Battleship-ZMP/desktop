@@ -15,3 +15,22 @@ export const fetchProfile = (userID) => async (dispatch) => {
       });
     });
 };
+
+export const updateProfile = (profile) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const currentUserUid = firebase.auth().currentUser.uid;
+
+  profile.avatar = profile.avatar ? profile.avatar : "";
+
+  firestore
+    .collection("users")
+    .doc(currentUserUid)
+    .update({
+      bio: profile.bio,
+      userName: profile.userName,
+      avatar: profile.avatar,
+    })
+    .then(() => {
+      dispatch(fetchProfile(currentUserUid));
+    });
+};

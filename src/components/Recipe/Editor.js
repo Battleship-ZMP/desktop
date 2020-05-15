@@ -47,7 +47,6 @@ class Editor extends Component {
   static get propTypes() {
     return {
       onSubmit: PropTypes.func,
-      test: PropTypes.func,
     };
   }
 

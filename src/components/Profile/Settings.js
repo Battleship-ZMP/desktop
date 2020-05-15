@@ -17,9 +17,11 @@ import { Field, Form, Formik } from "formik";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import PasswdChangeModal from "./PasswdChangeModal";
+import {updateProfile} from "../../store/actions/profileActions";
+import PropTypes from "prop-types";
 
 const profileSchema = Yup.object().shape({
-  name: Yup.string().required("The username is required"),
+  userName: Yup.string().required("The username is required"),
   bio: Yup.string().max(255, "Bio must contain less than 255 characters"),
 });
 
@@ -38,10 +40,11 @@ class Settings extends React.Component {
     };
   }
 
-  componentDidMount() {}
-
   static get propTypes() {
-    return {};
+    return {
+      updateProfile: PropTypes.func,
+      profile: PropTypes.object,
+    };
   }
 
   render() {
@@ -57,13 +60,10 @@ class Settings extends React.Component {
             initialValues={{
               userName: this.props.profile.userName,
               bio: "Moja biografia!",
-              password: "",
-              confirmPassword: "",
             }}
-            isInitialValid={false}
             validationSchema={profileSchema}
             onSubmit={(profile, { setSubmitting }) => {
-              console.log(profile);
+              this.props.updateProfile(profile);
             }}
           >
             {({ isSubmitting, isValid, values }) => (
@@ -162,6 +162,8 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => ({});
+const mapDispatchToProps = (dispatch) => ({
+  updateProfile: profile => dispatch(updateProfile(profile))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);
