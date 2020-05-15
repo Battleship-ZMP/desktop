@@ -10,14 +10,8 @@ import { connect } from "react-redux";
 import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
 import Routes from "../../Router/Routes";
-import {
-  MDBBtn,
-  MDBContainer,
-  MDBIcon,
-  MDBNav,
-  MDBNavbar,
-} from "mdbreact";
-import { Link } from "react-router-dom";
+import { MDBBtn, MDBContainer, MDBIcon, MDBNav, MDBNavbar } from "mdbreact";
+import {Link, Redirect} from "react-router-dom";
 
 class Header extends Component {
   constructor(props) {
@@ -41,6 +35,7 @@ class Header extends Component {
   handleClick(e) {
     e.preventDefault();
     this.props.signOut();
+    return <Redirect to="/posts/" />;
   }
 
   toggleMenu(e) {

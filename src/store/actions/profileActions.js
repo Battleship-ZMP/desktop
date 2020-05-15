@@ -21,6 +21,7 @@ export const updateProfile = (profile) => async (dispatch) => {
   const currentUserUid = firebase.auth().currentUser.uid;
 
   profile.avatar = profile.avatar ? profile.avatar : "";
+    console.log("asdfsafdsadff");
 
   firestore
     .collection("users")
@@ -32,5 +33,33 @@ export const updateProfile = (profile) => async (dispatch) => {
     })
     .then(() => {
       dispatch(fetchProfile(currentUserUid));
+    });
+};
+
+export const changePassword = (data) => async (dispatch) => {
+  const currentUser = firebase.auth().currentUser;
+
+    console.log("adsfadsf");
+  const credential = firebase.auth.EmailAuthProvider.credential(
+    currentUser.email,
+    data.currentPassword
+  );
+
+  currentUser
+    .reauthenticateWithCredential(credential)
+    .then((userCredential) => {
+      console.log("reauthenticated");
+
+      currentUser
+        .updatePassword(data.newPassword)
+        .then(() => {
+          console.log("password changed!");
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    })
+    .catch((err) => {
+      console.log(err);
     });
 };

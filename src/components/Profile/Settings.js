@@ -17,7 +17,7 @@ import { Field, Form, Formik } from "formik";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import PasswdChangeModal from "./PasswdChangeModal";
-import {updateProfile} from "../../store/actions/profileActions";
+import { updateProfile } from "../../store/actions/profileActions";
 import PropTypes from "prop-types";
 
 const profileSchema = Yup.object().shape({
@@ -46,7 +46,9 @@ class Settings extends React.Component {
       profile: PropTypes.object,
     };
   }
-
+  //
+  //TODO submit from outside
+  //
   render() {
     return (
       <MDBContainer fluid className="p-4">
@@ -59,7 +61,9 @@ class Settings extends React.Component {
           <Formik
             initialValues={{
               userName: this.props.profile.userName,
-              bio: "Moja biografia!",
+              bio: this.props.profile.bio
+                ? this.props.profile.bio
+                : "Moja biografia!",
             }}
             validationSchema={profileSchema}
             onSubmit={(profile, { setSubmitting }) => {
@@ -145,11 +149,11 @@ class Settings extends React.Component {
                   >
                     Wyślij
                   </MDBBtn>
-                  <PasswdChangeModal />
                 </MDBCardFooter>
               </Form>
             )}
           </Formik>
+          <PasswdChangeModal />
         </MDBCard>
       </MDBContainer>
     );
@@ -163,7 +167,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  updateProfile: profile => dispatch(updateProfile(profile))
+  updateProfile: (profile) => dispatch(updateProfile(profile)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Settings);

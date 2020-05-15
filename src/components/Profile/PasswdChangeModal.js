@@ -11,13 +11,21 @@ import {
 } from "mdbreact";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
+import {
+  changePassword,
+  updateProfile,
+} from "../../store/actions/profileActions";
+import { connect } from "react-redux";
 
 const passwordSchema = Yup.object().shape({
-  password: Yup.string()
+  currentPassword: Yup.string()
     .required("The password is required.")
     .min(8, "Password must contain min. 8 characters"),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref("password"), null], "Passwords must match")
+  newPassword: Yup.string()
+    .required("The password is required.")
+    .min(8, "Password must contain min. 8 characters"),
+  confirmNewPassword: Yup.string()
+    .oneOf([Yup.ref("newPassword"), null], "Passwords must match")
     .required("Password confirmation is required"),
 });
 
@@ -46,82 +54,85 @@ class PasswdChangeModal extends React.Component {
         <Formik
           initialValues={{
             currentPassword: "",
-            password: "",
-            confirmPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
           }}
           isInitialValid={false}
           validationSchema={passwordSchema}
-          onSubmit={(password, { setSubmitting }) => {
-            console.log(password);
+          onSubmit={(data, { setSubmitting }) => {
+            console.log("submitting");
+            this.props.changePassword(data);
           }}
         >
           {({ isSubmitting, isValid, values }) => (
-            <MDBModal isOpen={this.state.show} toggle={this.toggle}>
-              <MDBModalHeader
-                className="bg-danger text-white"
-                toggle={this.toggle}
-              >
-                Zmień hasło
-              </MDBModalHeader>
-              <MDBModalBody>
-                <Field name="currentPassword" autoComplete="off">
-                  {({ field, form, meta }) => (
-                    <div>
-                      <MDBInput
-                        containerClass="mb-0 pb-0"
-                        type="password"
-                        label="Obecne hasło"
-                        {...field}
-                      />
-                      {meta.touched && meta.error && (
-                        <small className="text-danger m-0 p-0">
-                          {meta.error}
-                        </small>
-                      )}
-                    </div>
-                  )}
-                </Field>
-                <Field name="password" autoComplete="off">
-                  {({ field, form, meta }) => (
-                    <div>
-                      <MDBInput
-                        containerClass="mb-0 pb-0"
-                        type="password"
-                        label="Nowe hasło"
-                        {...field}
-                      />
-                      {meta.touched && meta.error && (
-                        <small className="text-danger m-0 p-0">
-                          {meta.error}
-                        </small>
-                      )}
-                    </div>
-                  )}
-                </Field>
-                <Field name="confirmPassword" autoComplete="off">
-                  {({ field, form, meta }) => (
-                    <div>
-                      <MDBInput
-                        containerClass="mb-0 pb-0"
-                        type="password"
-                        label="Potwierdź hasło"
-                        {...field}
-                      />
-                      {meta.touched && meta.error && (
-                        <small className="text-danger m-0 p-0">
-                          {meta.error}
-                        </small>
-                      )}
-                    </div>
-                  )}
-                </Field>
-              </MDBModalBody>
-              <MDBModalFooter>
-                <MDBBtn color="danger" onClick={this.toggle}>
-                  Zapisz
-                </MDBBtn>
-              </MDBModalFooter>
-            </MDBModal>
+            <Form>
+              <MDBModal isOpen={this.state.show} toggle={this.toggle}>
+                <MDBModalHeader
+                  className="bg-danger text-white"
+                  toggle={this.toggle}
+                >
+                  Zmień hasło
+                </MDBModalHeader>
+                <MDBModalBody>
+                  <Field name="currentPassword" autoComplete="off">
+                    {({ field, form, meta }) => (
+                      <div>
+                        <MDBInput
+                          containerClass="mb-0 pb-0"
+                          type="password"
+                          label="Obecne hasło"
+                          {...field}
+                        />
+                        {meta.touched && meta.error && (
+                          <small className="text-danger m-0 p-0">
+                            {meta.error}
+                          </small>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+                  <Field name="newPassword" autoComplete="off">
+                    {({ field, form, meta }) => (
+                      <div>
+                        <MDBInput
+                          containerClass="mb-0 pb-0"
+                          type="password"
+                          label="Nowe hasło"
+                          {...field}
+                        />
+                        {meta.touched && meta.error && (
+                          <small className="text-danger m-0 p-0">
+                            {meta.error}
+                          </small>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+                  <Field name="confirmNewPassword" autoComplete="off">
+                    {({ field, form, meta }) => (
+                      <div>
+                        <MDBInput
+                          containerClass="mb-0 pb-0"
+                          type="password"
+                          label="Potwierdź hasło"
+                          {...field}
+                        />
+                        {meta.touched && meta.error && (
+                          <small className="text-danger m-0 p-0">
+                            {meta.error}
+                          </small>
+                        )}
+                      </div>
+                    )}
+                  </Field>
+                </MDBModalBody>
+                <MDBModalFooter>
+                  <MDBBtn color="danger" type="submit">
+                    Zapisz
+                  </MDBBtn>
+                </MDBModalFooter>
+              </MDBModal>
+            </Form>
           )}
         </Formik>
       </div>
@@ -129,4 +140,8 @@ class PasswdChangeModal extends React.Component {
   }
 }
 
-export default PasswdChangeModal;
+const mapDispatchToProps = (dispatch) => ({
+  changePassword: (data) => dispatch(changePassword(data)),
+});
+
+export default connect(null, mapDispatchToProps)(PasswdChangeModal);

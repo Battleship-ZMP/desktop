@@ -40,11 +40,13 @@ class Profile extends React.Component {
 
   content() {
     if (
-      (!store.getState().firebase.auth.isEmpty &&
-        store.getState().firebase.auth.isLoaded) ||
-      this.userID === firebase.auth().currentUser.uid
+      !store.getState().firebase.auth.isEmpty &&
+      store.getState().firebase.auth.isLoaded
     ) {
-      if (this.state.userID === firebase.auth().currentUser.uid) {
+      if (
+        typeof firebase.auth().currentUser !== "undefined" ||
+        this.state.userID === firebase.auth().currentUser.uid
+      ) {
         return <Settings />;
       } else {
         return <List recipes={this.props.recipes} />;
