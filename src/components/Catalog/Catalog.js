@@ -22,6 +22,12 @@ class Catalog extends Component {
     this.handleSort = this.handleSort.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (this.props.filter !== prevProps.filter) {
+      this.props.fetchFilteredRecipes(this.props.filter, ["name", "asc"]);
+    }
+  }
+
   static get propTypes() {
     return {
       fetchAllRecipes: PropTypes.func,

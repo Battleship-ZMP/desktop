@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import {Redirect, Route, Switch} from "react-router-dom";
+import { Redirect, Route, Switch } from "react-router-dom";
 import Catalog from "../components/Catalog/Catalog";
 import Recipe from "../components/Recipe/Recipe";
 import Editor from "../components/Recipe/Editor";
@@ -31,7 +31,7 @@ class Routes extends Component {
       <Switch>
         <Route exact path="/" render={(props) => <Catalog {...props} />} />
         <Route path="/recipe/:id" component={Recipe} />
-        <Route path="/user/:userID" component={Profile}/>
+        <Route path="/user/:userID" component={Profile} />
         <PrivateRoute path="/editor" component={Editor} />
         <PrivateRoute
           path="/cookbook/created"

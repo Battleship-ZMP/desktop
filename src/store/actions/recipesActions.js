@@ -16,9 +16,7 @@ export const unSaveRecipe = (recipeID) => async (dispatch) => {
         firebase.auth().currentUser.uid
       ),
     })
-    .then((res) => {
-      console.log(res);
-    })
+    .then(() => {})
     .catch((err) => {
       console.log(err);
     });
@@ -35,9 +33,7 @@ export const saveRecipe = (recipeID) => async (dispatch) => {
         firebase.auth().currentUser.uid
       ),
     })
-    .then((res) => {
-      console.log(res);
-    })
+    .then(() => {})
     .catch((err) => {
       console.log(err);
     });
@@ -164,7 +160,7 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
                 photo = downloadURL;
                 firestore.collection("recipes").doc(recipeRes.id).update({
                   photo: photo,
-                  date: firestore.FieldValue.serverTimestamp(),
+                  date: firebase.firestore.FieldValue.serverTimestamp(),
                 });
               });
           })
@@ -174,7 +170,7 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
       } else {
         firestore.collection("recipes").doc(recipeRes.id).update({
           photo: null,
-          date: firestore.FieldValue.serverTimestamp(),
+          date: firebase.firestore.FieldValue.serverTimestamp(),
         });
       }
     })
