@@ -17,8 +17,9 @@ import { Field, Form, Formik } from "formik";
 import Dropzone from "react-dropzone";
 import { connect } from "react-redux";
 import PasswdChangeModal from "./PasswdChangeModal";
-import { updateProfile } from "../../store/actions/profileActions";
+import { updateProfile } from "../../../store/actions/profileActions";
 import PropTypes from "prop-types";
+import DeleteAccountModal from "./DeleteAccountModal";
 
 const profileSchema = Yup.object().shape({
   userName: Yup.string().required("The username is required"),
@@ -150,7 +151,7 @@ class Settings extends React.Component {
           </MDBCardBody>
           <MDBCardFooter className="d-flex">
             <PasswdChangeModal />
-            <MDBBtn color={"danger"}>Usuń konto</MDBBtn>
+            <DeleteAccountModal />
           </MDBCardFooter>
         </MDBCard>
       </MDBContainer>

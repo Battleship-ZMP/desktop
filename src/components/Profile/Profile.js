@@ -7,7 +7,7 @@ import List from "../Catalog/List";
 import { fetchFilteredRecipes } from "../../store/actions/recipesActions";
 import store from "../../store/store";
 import firebase from "firebase/app";
-import Settings from "./Settings";
+import Settings from "./Settings/Settings";
 
 class Profile extends React.Component {
   constructor(props) {
@@ -41,16 +41,11 @@ class Profile extends React.Component {
   content() {
     if (
       !store.getState().firebase.auth.isEmpty &&
-      store.getState().firebase.auth.isLoaded
+      store.getState().firebase.auth.isLoaded &&
+      typeof firebase.auth().currentUser !== "undefined" &&
+      this.state.userID === firebase.auth().currentUser.uid
     ) {
-      if (
-        typeof firebase.auth().currentUser !== "undefined" ||
-        this.state.userID === firebase.auth().currentUser.uid
-      ) {
-        return <Settings />;
-      } else {
-        return <List recipes={this.props.recipes} />;
-      }
+      return <Settings />;
     } else {
       return <List recipes={this.props.recipes} />;
     }

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect, Route } from "react-router-dom";
+import {Redirect, Route, Switch} from "react-router-dom";
 import Catalog from "../components/Catalog/Catalog";
 import Recipe from "../components/Recipe/Recipe";
 import Editor from "../components/Recipe/Editor";
@@ -28,7 +28,7 @@ class Routes extends Component {
 
   render() {
     return (
-      <div>
+      <Switch>
         <Route exact path="/" render={(props) => <Catalog {...props} />} />
         <Route path="/recipe/:id" component={Recipe} />
         <Route path="/user/:userID" component={Profile}/>
@@ -44,7 +44,7 @@ class Routes extends Component {
           filter={["savedByUsers", "array-contains", this.getUserID()]}
         />
         <Route render={() => <Redirect to="/" />} />
-      </div>
+      </Switch>
     );
   }
 }

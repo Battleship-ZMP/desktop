@@ -78,7 +78,14 @@ export const fetchAllRecipes = (order) => async (dispatch) => {
           .doc(doc.data().userID)
           .get()
           .then((author) => {
-            recipe.userName = author.data().userName;
+            if (author.data() === undefined) {
+              recipe.userName = null;
+            } else {
+              recipe.userName = author.data().userName;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
           });
 
         recipes.push(recipe);
@@ -111,7 +118,14 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
           .doc(doc.data().userID)
           .get()
           .then((author) => {
-            recipe.userName = author.data().userName;
+            if (author.data() === undefined) {
+              recipe.userName = null;
+            } else {
+              recipe.userName = author.data().userName;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
           });
 
         recipes.push(recipe);

@@ -25,6 +25,7 @@ class Recipe extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleUnSave = this.handleUnSave.bind(this);
     this.handleLike = this.handleLike.bind(this);
+    this.authorLink = this.authorLink.bind(this);
   }
 
   componentDidMount() {
@@ -94,6 +95,23 @@ class Recipe extends Component {
     }
   }
 
+  authorLink() {
+    if (this.recipe.userName) {
+      return (
+        <Link
+          to={{
+            pathname: `/user/${this.recipe.userID}`,
+            state: { userID: this.recipe.userID },
+          }}
+        >
+          {this.recipe.userName}
+        </Link>
+      );
+    } else {
+      return <div>Konto skasowane</div>;
+    }
+  }
+
   render() {
     return (
       <MDBContainer style={{ padding: "5rem" }}>
@@ -124,14 +142,8 @@ class Recipe extends Component {
         </MDBRow>
         <MDBRow className="flex-column">
           <h4 className="title">Autor:</h4>
-          <Link
-            to={{
-              pathname: `/user/${this.recipe.userID}`,
-              state: { userID: this.recipe.userID },
-            }}
-          >
-            {this.recipe.userName}
-          </Link>
+
+          {this.authorLink()}
         </MDBRow>
       </MDBContainer>
     );

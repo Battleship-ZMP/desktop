@@ -14,7 +14,7 @@ import * as Yup from "yup";
 import {
   changePassword,
   updateProfile,
-} from "../../store/actions/profileActions";
+} from "../../../store/actions/profileActions";
 import { connect } from "react-redux";
 
 const passwordSchema = Yup.object().shape({

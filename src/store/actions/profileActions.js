@@ -21,7 +21,6 @@ export const updateProfile = (profile) => async (dispatch) => {
   const currentUserUid = firebase.auth().currentUser.uid;
 
   profile.avatar = profile.avatar ? profile.avatar : "";
-    console.log("asdfsafdsadff");
 
   firestore
     .collection("users")
@@ -39,7 +38,6 @@ export const updateProfile = (profile) => async (dispatch) => {
 export const changePassword = (data) => async (dispatch) => {
   const currentUser = firebase.auth().currentUser;
 
-    console.log("adsfadsf");
   const credential = firebase.auth.EmailAuthProvider.credential(
     currentUser.email,
     data.currentPassword
@@ -62,4 +60,34 @@ export const changePassword = (data) => async (dispatch) => {
     .catch((err) => {
       console.log(err);
     });
+};
+
+export const deleteUser = (data) => async (dispatch) => {
+  const firestore = firebase.firestore();
+
+  const currentUser = firebase.auth().currentUser;
+  const profileRef = firestore.collection("users").doc(currentUser.uid);
+
+  const credential = firebase.auth.EmailAuthProvider.credential(
+    currentUser.email,
+    data.password
+  );
+
+  currentUser.reauthenticateWithCredential(credential).then(() => {
+    profileRef
+      .delete()
+      .then(() => {
+        currentUser
+          .delete()
+          .then(() => {
+            console.log("Account deleted");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  });
 };
