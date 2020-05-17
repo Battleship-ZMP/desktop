@@ -46,9 +46,6 @@ class Settings extends React.Component {
       profile: PropTypes.object,
     };
   }
-  //
-  //TODO submit from outside
-  //
   render() {
     return (
       <MDBContainer fluid className="p-4">

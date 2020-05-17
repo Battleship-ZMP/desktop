@@ -70,6 +70,7 @@ export const fetchAllRecipes = (order) => async (dispatch) => {
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
         const recipe = doc.data();
+        recipe.date = recipe.date.toDate().toLocaleString();
         recipe.id = doc.id;
 
         await firestore
@@ -102,6 +103,7 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
         const recipe = doc.data();
+        recipe.date = recipe.date.toDate().toLocaleString();
         recipe.id = doc.id;
 
         await firestore
@@ -124,18 +126,10 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
 export const addRecipe = (recipe, photo) => async (dispatch) => {
   const firestore = firebase.firestore();
 
-  function getDate() {
-    var formatter = new Intl.DateTimeFormat("pl");
-    const now = new Date();
-    var date = formatter.format(now);
-    date = date + " " + now.getHours() + ":" + now.getMinutes();
-    return date;
-  }
-
   recipe.rating = [];
   recipe.savedByUsers = [];
   recipe.userID = firebase.auth().currentUser.uid;
-  recipe.date = getDate();
+  recipe.date = null;
 
   firestore
     .collection("recipes")
@@ -154,9 +148,9 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
               .getDownloadURL()
               .then(function (downloadURL) {
                 photo = downloadURL;
-                console.log(downloadURL);
                 firestore.collection("recipes").doc(recipeRes.id).update({
                   photo: photo,
+                  date: firestore.FieldValue.serverTimestamp(),
                 });
               });
           })
@@ -166,6 +160,7 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
       } else {
         firestore.collection("recipes").doc(recipeRes.id).update({
           photo: null,
+          date: firestore.FieldValue.serverTimestamp(),
         });
       }
     })
