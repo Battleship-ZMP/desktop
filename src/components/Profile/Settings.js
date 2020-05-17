@@ -55,21 +55,21 @@ class Settings extends React.Component {
               Ustawienia profilu
             </MDBCardTitle>
           </MDBCardHeader>
-          <Formik
-            initialValues={{
-              userName: this.props.profile.userName,
-              bio: this.props.profile.bio
-                ? this.props.profile.bio
-                : "Moja biografia!",
-            }}
-            validationSchema={profileSchema}
-            onSubmit={(profile, { setSubmitting }) => {
-              this.props.updateProfile(profile);
-            }}
-          >
-            {({ isSubmitting, isValid, values }) => (
-              <Form>
-                <MDBCardBody>
+          <MDBCardBody>
+            <Formik
+              initialValues={{
+                userName: this.props.profile.userName,
+                bio: this.props.profile.bio
+                  ? this.props.profile.bio
+                  : "Moja biografia!",
+              }}
+              validationSchema={profileSchema}
+              onSubmit={(profile, { setSubmitting }) => {
+                this.props.updateProfile(profile);
+              }}
+            >
+              {({ isSubmitting, isValid, values }) => (
+                <Form>
                   <MDBRow>
                     <MDBCol md="8">
                       <Field name="userName">
@@ -106,6 +106,14 @@ class Settings extends React.Component {
                           </div>
                         )}
                       </Field>
+                      <MDBBtn
+                        type="submit"
+                        disabled={!isValid}
+                        color="teal"
+                        className="ml-0 text-white"
+                      >
+                        Wyślij
+                      </MDBBtn>
                     </MDBCol>
                     <MDBCol md="4" className="d-flex">
                       <Dropzone
@@ -136,21 +144,14 @@ class Settings extends React.Component {
                       </Dropzone>
                     </MDBCol>
                   </MDBRow>
-                </MDBCardBody>
-                <MDBCardFooter className="d-flex">
-                  <MDBBtn
-                    type="submit"
-                    disabled={!isValid}
-                    color="teal"
-                    className="text-white"
-                  >
-                    Wyślij
-                  </MDBBtn>
-                </MDBCardFooter>
-              </Form>
-            )}
-          </Formik>
-          <PasswdChangeModal />
+                </Form>
+              )}
+            </Formik>
+          </MDBCardBody>
+          <MDBCardFooter className="d-flex">
+            <PasswdChangeModal />
+            <MDBBtn color={"danger"}>Usuń konto</MDBBtn>
+          </MDBCardFooter>
         </MDBCard>
       </MDBContainer>
     );

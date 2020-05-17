@@ -47,8 +47,8 @@ class PasswdChangeModal extends React.Component {
   render() {
     return (
       <div>
-        <MDBBtn onClick={this.toggle} color="danger">
-          Change password
+        <MDBBtn onClick={this.toggle} color="danger" className="ml-0">
+          Zmień hasło
         </MDBBtn>
 
         <Formik
