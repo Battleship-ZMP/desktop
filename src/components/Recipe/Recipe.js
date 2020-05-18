@@ -3,7 +3,7 @@ import { MDBCol, MDBContainer, MDBRating, MDBRow, MDBBtn } from "mdbreact";
 import firebase from "firebase/app";
 import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
 import { saveRecipe, unSaveRecipe } from "../../store/actions/recipesActions";
 import store from "../../store/store";
@@ -25,6 +25,7 @@ class Recipe extends Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleUnSave = this.handleUnSave.bind(this);
     this.handleLike = this.handleLike.bind(this);
+    this.authorLink = this.authorLink.bind(this);
   }
 
   componentDidMount() {
@@ -94,6 +95,23 @@ class Recipe extends Component {
     }
   }
 
+  authorLink() {
+    if (this.recipe.userName) {
+      return (
+        <Link
+          to={{
+            pathname: `/user/${this.recipe.userID}`,
+            state: { userID: this.recipe.userID },
+          }}
+        >
+          {this.recipe.userName}
+        </Link>
+      );
+    } else {
+      return <div>Konto skasowane</div>;
+    }
+  }
+
   render() {
     return (
       <MDBContainer style={{ padding: "5rem" }}>
@@ -124,7 +142,8 @@ class Recipe extends Component {
         </MDBRow>
         <MDBRow className="flex-column">
           <h4 className="title">Autor:</h4>
-          <p>{this.recipe.userName}</p>
+
+          {this.authorLink()}
         </MDBRow>
       </MDBContainer>
     );

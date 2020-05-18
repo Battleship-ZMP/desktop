@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import {
   MDBBtn,
   MDBCard,
@@ -13,29 +13,26 @@ import {
   MDBRow,
 } from "mdbreact";
 import * as Yup from "yup";
-import { Formik, Field, Form } from "formik";
-import { connect } from "react-redux";
-import { addRecipe } from "../../store/actions/recipesActions";
+import { Field, Form, Formik } from "formik";
 import Dropzone from "react-dropzone";
-import "./Uploader.css";
+import { connect } from "react-redux";
+import PasswdChangeModal from "./PasswdChangeModal";
+import { updateProfile } from "../../../store/actions/profileActions";
 import PropTypes from "prop-types";
+import DeleteAccountModal from "./DeleteAccountModal";
 
-const AddRecipeSchema = Yup.object().shape({
-  name: Yup.string().required("Tytuł jest wymagany"),
-  description: Yup.string(),
-  ingredients: Yup.string().required("Podanie składników jest wymagane"),
-  instructions: Yup.string().required("Instrukcje przepisu są wymagane"),
-  photo: Yup.string(),
+const profileSchema = Yup.object().shape({
+  userName: Yup.string().required("The username is required"),
+  bio: Yup.string().max(255, "Bio must contain less than 255 characters"),
 });
 
-class Editor extends Component {
+class Settings extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
       files: [],
     };
-
     this.onDrop = (files) => {
       files.map((file) => {
         Object.assign(file, { preview: URL.createObjectURL(file) });
@@ -46,45 +43,43 @@ class Editor extends Component {
 
   static get propTypes() {
     return {
-      onSubmit: PropTypes.func,
+      updateProfile: PropTypes.func,
+      profile: PropTypes.object,
     };
   }
-
   render() {
     return (
       <MDBContainer fluid className="p-4">
         <MDBCard>
           <MDBCardHeader color="teal" className="teal">
-            <MDBCardTitle className="text-white">Dodaj przepis!</MDBCardTitle>
+            <MDBCardTitle className="text-white">
+              Ustawienia profilu
+            </MDBCardTitle>
           </MDBCardHeader>
-          <Formik
-            initialValues={{
-              name: "",
-              description: "",
-              ingredients: "",
-              instructions: "",
-            }}
-            isInitialValid={false}
-            validationSchema={AddRecipeSchema}
-            onSubmit={(recipe, { setSubmitting }) => {
-              this.props.onSubmit(
-                recipe,
-                this.state.files[0] ? this.state.files[0] : ""
-              );
-            }}
-          >
-            {({ isSubmitting, isValid }) => (
-              <Form>
-                <MDBCardBody>
+          <MDBCardBody>
+            <Formik
+              initialValues={{
+                userName: this.props.profile.userName,
+                bio: this.props.profile.bio
+                  ? this.props.profile.bio
+                  : "Moja biografia!",
+              }}
+              validationSchema={profileSchema}
+              onSubmit={(profile, { setSubmitting }) => {
+                this.props.updateProfile(profile);
+              }}
+            >
+              {({ isSubmitting, isValid, values }) => (
+                <Form>
                   <MDBRow>
                     <MDBCol md="8">
-                      <Field name="name">
-                        {({ field, form: { touched, errors }, meta }) => (
+                      <Field name="userName">
+                        {({ field, form, meta }) => (
                           <div>
                             <MDBInput
                               containerClass="mb-0 pb-0"
                               type="text"
-                              label="Tytuł"
+                              label="Nazwa uzytkownika"
                               {...field}
                             />
                             {meta.touched && meta.error && (
@@ -95,25 +90,13 @@ class Editor extends Component {
                           </div>
                         )}
                       </Field>
-                      <Field name="description">
-                        {({ field }) => (
+                      <Field name="bio">
+                        {({ field, form, meta }) => (
                           <div>
                             <MDBInput
                               containerClass="mb-0 pb-0"
                               type="text"
-                              label="Opis"
-                              {...field}
-                            />
-                          </div>
-                        )}
-                      </Field>
-                      <Field name="ingredients">
-                        {({ field, form: { touched, errors }, meta }) => (
-                          <div>
-                            <MDBInput
-                              containerClass="mb-0 pb-0"
-                              type="text"
-                              label="Składniki"
+                              label="Biografia"
                               {...field}
                             />
                             {meta.touched && meta.error && (
@@ -124,23 +107,14 @@ class Editor extends Component {
                           </div>
                         )}
                       </Field>
-                      <Field name="instructions">
-                        {({ field, form: { touched, errors }, meta }) => (
-                          <div>
-                            <MDBInput
-                              containerClass="mb-0 pb-0"
-                              type="text"
-                              label="Instrukcje"
-                              {...field}
-                            />
-                            {meta.touched && meta.error && (
-                              <small className="text-danger m-0 p-0">
-                                {meta.error}
-                              </small>
-                            )}
-                          </div>
-                        )}
-                      </Field>
+                      <MDBBtn
+                        type="submit"
+                        disabled={!isValid}
+                        color="teal"
+                        className="ml-0 text-white"
+                      >
+                        Wyślij
+                      </MDBBtn>
                     </MDBCol>
                     <MDBCol md="4" className="d-flex">
                       <Dropzone
@@ -171,26 +145,28 @@ class Editor extends Component {
                       </Dropzone>
                     </MDBCol>
                   </MDBRow>
-                </MDBCardBody>
-                <MDBCardFooter>
-                  <MDBBtn
-                    type="submit"
-                    disabled={!isValid}
-                    color="teal"
-                    className="text-white"
-                  >
-                    Wyślij
-                  </MDBBtn>
-                </MDBCardFooter>
-              </Form>
-            )}
-          </Formik>
+                </Form>
+              )}
+            </Formik>
+          </MDBCardBody>
+          <MDBCardFooter className="d-flex">
+            <PasswdChangeModal />
+            <DeleteAccountModal />
+          </MDBCardFooter>
         </MDBCard>
       </MDBContainer>
     );
   }
 }
+
+const mapStateToProps = (state) => {
+  return {
+    profile: state.firebase.profile,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: (recipe, photo) => dispatch(addRecipe(recipe, photo)),
+  updateProfile: (profile) => dispatch(updateProfile(profile)),
 });
-export default connect(null, mapDispatchToProps)(Editor);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings);

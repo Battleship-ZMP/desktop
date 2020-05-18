@@ -51,7 +51,11 @@ class RecipePreview extends Component {
               </div>
               <div>
                 <div className="caption grey-text">Użytkownik</div>
-                <div>{this.recipe.userName}</div>
+                <div>
+                  {this.recipe.userName
+                    ? this.recipe.userName
+                    : "konto skasowane"}
+                </div>
               </div>
               <div>
                 <div className="caption grey-text">Dodano</div>

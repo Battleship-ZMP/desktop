@@ -16,9 +16,7 @@ export const unSaveRecipe = (recipeID) => async (dispatch) => {
         firebase.auth().currentUser.uid
       ),
     })
-    .then((res) => {
-      console.log(res);
-    })
+    .then(() => {})
     .catch((err) => {
       console.log(err);
     });
@@ -35,9 +33,7 @@ export const saveRecipe = (recipeID) => async (dispatch) => {
         firebase.auth().currentUser.uid
       ),
     })
-    .then((res) => {
-      console.log(res);
-    })
+    .then(() => {})
     .catch((err) => {
       console.log(err);
     });
@@ -70,6 +66,7 @@ export const fetchAllRecipes = (order) => async (dispatch) => {
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
         const recipe = doc.data();
+        recipe.date = recipe.date.toDate().toLocaleString();
         recipe.id = doc.id;
 
         await firestore
@@ -77,7 +74,14 @@ export const fetchAllRecipes = (order) => async (dispatch) => {
           .doc(doc.data().userID)
           .get()
           .then((author) => {
-            recipe.userName = author.data().userName;
+            if (author.data() === undefined) {
+              recipe.userName = null;
+            } else {
+              recipe.userName = author.data().userName;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
           });
 
         recipes.push(recipe);
@@ -97,10 +101,12 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
     .collection("recipes")
     .where(filter[0], filter[1], filter[2])
     .orderBy(order[0], order[1])
+    .limit(6)
     .get()
     .then(async (recipesQuery) => {
       for (const doc of recipesQuery.docs) {
         const recipe = doc.data();
+        recipe.date = recipe.date.toDate().toLocaleString();
         recipe.id = doc.id;
 
         await firestore
@@ -108,7 +114,14 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
           .doc(doc.data().userID)
           .get()
           .then((author) => {
-            recipe.userName = author.data().userName;
+            if (author.data() === undefined) {
+              recipe.userName = null;
+            } else {
+              recipe.userName = author.data().userName;
+            }
+          })
+          .catch((err) => {
+            console.log(err);
           });
 
         recipes.push(recipe);
@@ -123,16 +136,10 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
 export const addRecipe = (recipe, photo) => async (dispatch) => {
   const firestore = firebase.firestore();
 
-  function getDate() {
-    var formatter = new Intl.DateTimeFormat("pl");
-    const now = new Date();
-    var date = formatter.format(now);
-    date = date + " " + now.getHours() + ":" + now.getMinutes();
-    return date;
-  }
-
+  recipe.rating = [];
+  recipe.savedByUsers = [];
   recipe.userID = firebase.auth().currentUser.uid;
-  recipe.date = getDate();
+  recipe.date = null;
 
   firestore
     .collection("recipes")
@@ -151,9 +158,9 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
               .getDownloadURL()
               .then(function (downloadURL) {
                 photo = downloadURL;
-                console.log(downloadURL);
                 firestore.collection("recipes").doc(recipeRes.id).update({
                   photo: photo,
+                  date: firebase.firestore.FieldValue.serverTimestamp(),
                 });
               });
           })
@@ -163,6 +170,7 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
       } else {
         firestore.collection("recipes").doc(recipeRes.id).update({
           photo: null,
+          date: firebase.firestore.FieldValue.serverTimestamp(),
         });
       }
     })
