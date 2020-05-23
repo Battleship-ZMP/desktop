@@ -194,9 +194,9 @@ function avgRating(arr) {
   return avg;
 }
 
-export const rateRecipe = (recipe, rating) => async (dispatch) => {
+export const rateRecipe = (recipe, value) => async (dispatch) => {
   const firestore = firebase.firestore();
-  const currentUserID = this.auth().currentUser.uid;
+  const currentUserID = firebase.auth().currentUser.uid;
   const recipeRef = firestore.collection("recipes").doc(recipe.id);
 
   recipeRef
@@ -209,7 +209,7 @@ export const rateRecipe = (recipe, rating) => async (dispatch) => {
       recipeRef.update({
         rating: firebase.firestore.FieldValue.arrayUnion({
           userID: currentUserID,
-          value: rating,
+          value: value,
         }),
       });
     })

@@ -5,10 +5,14 @@ import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { saveRecipe, unSaveRecipe } from "../../store/actions/recipesActions";
+import {
+  rateRecipe,
+  saveRecipe,
+  unSaveRecipe,
+} from "../../store/actions/recipesActions";
 import store from "../../store/store";
 import Rating from "react-rating";
-import {onLog} from "firebase";
+import { onLog } from "firebase";
 
 class Recipe extends Component {
   constructor(props) {
@@ -116,7 +120,14 @@ class Recipe extends Component {
   }
 
   handleRate(value) {
-    console.log(value);
+    if (
+      !store.getState().firebase.auth.isEmpty &&
+      store.getState().firebase.auth.isLoaded
+    ) {
+      this.props.rateRecipe(this.recipe, value);
+    } else {
+      console.log("You must log in to rate recipes");
+    }
   }
 
   render() {
@@ -132,6 +143,12 @@ class Recipe extends Component {
             <p>Dodano: {this.recipe.date}</p>
             <div className="d-flex">
               <Rating
+                readonly={
+                  !(
+                    !store.getState().firebase.auth.isEmpty &&
+                    store.getState().firebase.auth.isLoaded
+                  )
+                }
                 emptySymbol="py-2 px-1 fas fa-star"
                 fullSymbol="py-2 px-1 fas fa-star amber-text"
                 placeholderRating={this.recipe.averageRating}
@@ -167,6 +184,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteRecipe: (recipeID) => dispatch(deleteRecipe(recipeID)),
   saveRecipe: (recipeID) => dispatch(saveRecipe(recipeID)),
   unSaveRecipe: (recipeID) => dispatch(unSaveRecipe(recipeID)),
+  rateRecipe: (recipe, value) => dispatch(rateRecipe(recipe, value)),
 });
 
 export default compose(connect(null, mapDispatchToProps), withRouter)(Recipe);
