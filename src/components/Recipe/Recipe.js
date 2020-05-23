@@ -124,7 +124,7 @@ class Recipe extends Component {
       !store.getState().firebase.auth.isEmpty &&
       store.getState().firebase.auth.isLoaded
     ) {
-      this.props.rateRecipe(this.recipe, value);
+      this.props.rateRecipe(this.recipe.id, value);
     } else {
       console.log("You must log in to rate recipes");
     }

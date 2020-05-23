@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
+import { onLog } from "firebase";
 
 export const unSaveRecipe = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
@@ -194,26 +195,44 @@ function avgRating(arr) {
   return avg;
 }
 
-export const rateRecipe = (recipe, value) => async (dispatch) => {
+export const rateRecipe = (recipeID, value) => async (dispatch) => {
   const firestore = firebase.firestore();
-  const currentUserID = firebase.auth().currentUser.uid;
-  const recipeRef = firestore.collection("recipes").doc(recipe.id);
 
-  recipeRef
-    .update({
-      rating: firebase.firestore.FieldValue.arrayRemove(
-        recipe.rating.find((object) => object.userID === currentUserID)
-      ),
-    })
-    .then(() => {
-      recipeRef.update({
-        rating: firebase.firestore.FieldValue.arrayUnion({
-          userID: currentUserID,
-          value: value,
-        }),
-      });
-    })
-    .then(() => {
-      console.log("Rating saved");
+  const currentUserID = firebase.auth().currentUser.uid;
+  const recipeRef = firestore.collection("recipes").doc(recipeID);
+  const newRating = { userID: currentUserID, value: value };
+
+  //get rating
+  firestore
+    .collection("recipes")
+    .doc(recipeID)
+    .get()
+    .then((recipe) => {
+      const rating = recipe.data().rating;
+
+      if (rating.find((object) => object.userID === currentUserID)) {
+        recipeRef
+          .update({
+            rating: firebase.firestore.FieldValue.arrayRemove(
+              rating.find((object) => object.userID === currentUserID)
+            ),
+          })
+          .then(() => {
+            recipeRef.update({
+              rating: firebase.firestore.FieldValue.arrayUnion(newRating),
+            });
+          })
+          .then(() => {
+            console.log("Rating saved");
+          });
+      } else {
+        recipeRef
+          .update({
+            rating: firebase.firestore.FieldValue.arrayUnion(newRating),
+          })
+          .then(() => {
+            console.log("Rating saved");
+          });
+      }
     });
 };
