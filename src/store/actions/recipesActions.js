@@ -135,11 +135,16 @@ export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
 
 export const addRecipe = (recipe, photo) => async (dispatch) => {
   const firestore = firebase.firestore();
+  const placeholder =
+    "https://firebasestorage.googleapis.com/v0/b/coolrecipes-f4e21.appspot.com/o/placeholders%2Frecipe_placeholder.png?alt=media&token=a23e9154-81c1-4d70-83a1-af110b2649c9";
 
+  recipe.averageRating = 0;
   recipe.rating = [];
   recipe.savedByUsers = [];
   recipe.userID = firebase.auth().currentUser.uid;
   recipe.date = null;
+
+  console.log(recipe);
 
   firestore
     .collection("recipes")
@@ -169,12 +174,46 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
           });
       } else {
         firestore.collection("recipes").doc(recipeRes.id).update({
-          photo: null,
+          photo: placeholder,
           date: firebase.firestore.FieldValue.serverTimestamp(),
         });
       }
     })
     .catch((err) => {
       console.log(err);
+    });
+};
+
+function avgRating(arr) {
+  let avg = 0;
+
+  arr.forEach((rating) => {
+    avg += rating.value;
+  });
+
+  return avg;
+}
+
+export const rateRecipe = (recipe, rating) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const currentUserID = this.auth().currentUser.uid;
+  const recipeRef = firestore.collection("recipes").doc(recipe.id);
+
+  recipeRef
+    .update({
+      rating: firebase.firestore.FieldValue.arrayRemove(
+        recipe.rating.find((object) => object.userID === currentUserID)
+      ),
+    })
+    .then(() => {
+      recipeRef.update({
+        rating: firebase.firestore.FieldValue.arrayUnion({
+          userID: currentUserID,
+          value: rating,
+        }),
+      });
+    })
+    .then(() => {
+      console.log("Rating saved");
     });
 };

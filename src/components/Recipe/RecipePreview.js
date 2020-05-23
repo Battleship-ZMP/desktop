@@ -1,12 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {
-  MDBCard,
-  MDBCardBody,
-  MDBRating,
-  MDBCol,
-  MDBCardImage,
-} from "mdbreact";
+import { MDBCard, MDBCardBody, MDBCol, MDBCardImage } from "mdbreact";
+import Rating from "react-rating";
 import { Link } from "react-router-dom";
 
 class RecipePreview extends Component {
@@ -63,7 +58,12 @@ class RecipePreview extends Component {
               </div>
               <div>
                 <div className="caption grey-text">Ocena</div>
-                <MDBRating containerClassName="justify-content-center" />
+                <Rating
+                  readonly
+                  emptySymbol="py-2 px-1 fas fa-star"
+                  fullSymbol="py-2 px-1 fas fa-star amber-text"
+                  initialRating={this.recipe.averageRating}
+                />
               </div>
             </MDBCardBody>
           </MDBCard>
