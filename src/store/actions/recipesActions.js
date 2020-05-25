@@ -4,7 +4,6 @@ import "firebase/auth";
 import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
-import { onLog } from "firebase";
 
 export const unSaveRecipe = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
@@ -143,9 +142,7 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
   recipe.rating = [];
   recipe.savedByUsers = [];
   recipe.userID = firebase.auth().currentUser.uid;
-  recipe.date = null;
-
-  console.log(recipe);
+  recipe.date = firebase.firestore.FieldValue.serverTimestamp();
 
   firestore
     .collection("recipes")
@@ -166,7 +163,6 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
                 photo = downloadURL;
                 firestore.collection("recipes").doc(recipeRes.id).update({
                   photo: photo,
-                  date: firebase.firestore.FieldValue.serverTimestamp(),
                 });
               });
           })
@@ -176,7 +172,6 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
       } else {
         firestore.collection("recipes").doc(recipeRes.id).update({
           photo: placeholder,
-          date: firebase.firestore.FieldValue.serverTimestamp(),
         });
       }
     })
@@ -185,16 +180,26 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
     });
 };
 
-function avgRating(arr) {
-  let avg = 0;
+const setAvgRating = (recipeID) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const recipeRef = firestore.collection("recipes").doc(recipeID);
 
-  arr.forEach((rating) => {
-    avg += rating.value;
+  recipeRef.get().then((res) => {
+    const ratings = res.data().rating;
+    let avg = 0;
+
+    ratings.forEach((rating) => {
+      avg += rating.value;
+    });
+
+    avg /= ratings.length;
+    recipeRef.update({ averageRating: avg }).then(() => {
+      console.log("rating updated");
+    });
   });
+};
 
-  return avg;
-}
-
+//TODO use transaction
 export const rateRecipe = (recipeID, value) => async (dispatch) => {
   const firestore = firebase.firestore();
 
@@ -202,37 +207,36 @@ export const rateRecipe = (recipeID, value) => async (dispatch) => {
   const recipeRef = firestore.collection("recipes").doc(recipeID);
   const newRating = { userID: currentUserID, value: value };
 
-  //get rating
-  firestore
-    .collection("recipes")
-    .doc(recipeID)
-    .get()
-    .then((recipe) => {
-      const rating = recipe.data().rating;
+  recipeRef.get().then((recipe) => {
+    const rating = recipe.data().rating;
 
-      if (rating.find((object) => object.userID === currentUserID)) {
-        recipeRef
-          .update({
-            rating: firebase.firestore.FieldValue.arrayRemove(
-              rating.find((object) => object.userID === currentUserID)
-            ),
-          })
-          .then(() => {
-            recipeRef.update({
+    if (rating.find((object) => object.userID === currentUserID)) {
+      recipeRef
+        .update({
+          rating: firebase.firestore.FieldValue.arrayRemove(
+            rating.find((object) => object.userID === currentUserID)
+          ),
+        })
+        .then(() => {
+          recipeRef
+            .update({
               rating: firebase.firestore.FieldValue.arrayUnion(newRating),
+            })
+            .then(() => {
+              dispatch(setAvgRating(recipeID));
             });
-          })
-          .then(() => {
-            console.log("Rating saved");
-          });
-      } else {
-        recipeRef
-          .update({
-            rating: firebase.firestore.FieldValue.arrayUnion(newRating),
-          })
-          .then(() => {
-            console.log("Rating saved");
-          });
-      }
-    });
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      recipeRef
+        .update({
+          rating: firebase.firestore.FieldValue.arrayUnion(newRating),
+        })
+        .then(() => {
+          dispatch(setAvgRating(recipeID));
+        });
+    }
+  });
 };
