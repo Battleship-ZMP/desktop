@@ -1,8 +1,7 @@
 import React, { Component } from "react";
 import { Provider } from "react-redux";
 import store from "./store/store";
-import { BrowserRouter as Router } from "react-router-dom";
-
+import { Router } from "react-router-dom";
 import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
@@ -14,6 +13,7 @@ import { isLoaded } from "react-redux-firebase";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import "bootstrap-css-only/css/bootstrap.min.css";
 import "mdbreact/dist/css/mdb.css";
+import history from "./Router/history";
 
 import Main from "./components/Main/Main";
 
@@ -42,7 +42,7 @@ class App extends Component {
       <Provider store={store}>
         <ReactReduxFirebaseProvider {...rrfProps}>
           <AuthIsLoaded>
-            <Router>
+            <Router history={history}>
               <div className="App">
                 <Main />
               </div>

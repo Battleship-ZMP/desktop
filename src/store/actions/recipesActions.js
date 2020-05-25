@@ -4,6 +4,7 @@ import "firebase/auth";
 import "firebase/storage";
 import "firebase/database";
 import { FETCHRECIPES_SUCCESS } from "./types";
+import history from "../../Router/history";
 
 export const unSaveRecipe = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
@@ -209,25 +210,29 @@ export const rateRecipe = (recipeID, value) => async (dispatch) => {
   let batch = firestore.batch();
 
   recipeRef.get().then((recipe) => {
-    const rating = recipe.data().rating;
+    if (!recipe.data()) {
+      history.push("/");
+    } else {
+      const rating = recipe.data().rating;
 
-    if (rating.find((object) => object.userID === currentUserID)) {
+      if (rating.find((object) => object.userID === currentUserID)) {
+        batch.update(recipeRef, {
+          rating: firebase.firestore.FieldValue.arrayRemove(
+            rating.find((object) => object.userID === currentUserID)
+          ),
+        });
+      }
       batch.update(recipeRef, {
-        rating: firebase.firestore.FieldValue.arrayRemove(
-          rating.find((object) => object.userID === currentUserID)
-        ),
+        rating: firebase.firestore.FieldValue.arrayUnion(newRating),
       });
+      batch
+        .commit()
+        .then(() => {
+          dispatch(setAvgRating(recipeID));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    batch.update(recipeRef, {
-      rating: firebase.firestore.FieldValue.arrayUnion(newRating),
-    });
-    batch
-      .commit()
-      .then(() => {
-        dispatch(setAvgRating(recipeID));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
   });
 };
