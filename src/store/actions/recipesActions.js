@@ -199,7 +199,6 @@ const setAvgRating = (recipeID) => async (dispatch) => {
   });
 };
 
-//TODO use transaction
 export const rateRecipe = (recipeID, value) => async (dispatch) => {
   const firestore = firebase.firestore();
 
@@ -207,36 +206,28 @@ export const rateRecipe = (recipeID, value) => async (dispatch) => {
   const recipeRef = firestore.collection("recipes").doc(recipeID);
   const newRating = { userID: currentUserID, value: value };
 
+  let batch = firestore.batch();
+
   recipeRef.get().then((recipe) => {
     const rating = recipe.data().rating;
 
     if (rating.find((object) => object.userID === currentUserID)) {
-      recipeRef
-        .update({
-          rating: firebase.firestore.FieldValue.arrayRemove(
-            rating.find((object) => object.userID === currentUserID)
-          ),
-        })
-        .then(() => {
-          recipeRef
-            .update({
-              rating: firebase.firestore.FieldValue.arrayUnion(newRating),
-            })
-            .then(() => {
-              dispatch(setAvgRating(recipeID));
-            });
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      recipeRef
-        .update({
-          rating: firebase.firestore.FieldValue.arrayUnion(newRating),
-        })
-        .then(() => {
-          dispatch(setAvgRating(recipeID));
-        });
+      batch.update(recipeRef, {
+        rating: firebase.firestore.FieldValue.arrayRemove(
+          rating.find((object) => object.userID === currentUserID)
+        ),
+      });
     }
+    batch.update(recipeRef, {
+      rating: firebase.firestore.FieldValue.arrayUnion(newRating),
+    });
+    batch
+      .commit()
+      .then(() => {
+        dispatch(setAvgRating(recipeID));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 };
