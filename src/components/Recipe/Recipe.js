@@ -5,8 +5,14 @@ import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
 import { Link, withRouter } from "react-router-dom";
 import { compose } from "redux";
-import { saveRecipe, unSaveRecipe } from "../../store/actions/recipesActions";
+import {
+  rateRecipe,
+  saveRecipe,
+  unSaveRecipe,
+} from "../../store/actions/recipesActions";
 import store from "../../store/store";
+import Rating from "react-rating";
+import { onLog } from "firebase";
 
 class Recipe extends Component {
   constructor(props) {
@@ -26,6 +32,7 @@ class Recipe extends Component {
     this.handleUnSave = this.handleUnSave.bind(this);
     this.handleLike = this.handleLike.bind(this);
     this.authorLink = this.authorLink.bind(this);
+    this.handleRate = this.handleRate.bind(this);
   }
 
   componentDidMount() {
@@ -112,6 +119,17 @@ class Recipe extends Component {
     }
   }
 
+  handleRate(value) {
+    if (
+      !store.getState().firebase.auth.isEmpty &&
+      store.getState().firebase.auth.isLoaded
+    ) {
+      this.props.rateRecipe(this.recipe.id, value);
+    } else {
+      console.log("You must log in to rate recipes");
+    }
+  }
+
   render() {
     return (
       <MDBContainer style={{ padding: "5rem" }}>
@@ -124,7 +142,19 @@ class Recipe extends Component {
             <h2 className="display-1">{this.recipe.name}</h2>
             <p>Dodano: {this.recipe.date}</p>
             <div className="d-flex">
-              <MDBRating containerClassName="justify-content-center" />
+              <Rating
+                readonly={
+                  !(
+                    !store.getState().firebase.auth.isEmpty &&
+                    store.getState().firebase.auth.isLoaded
+                  )
+                }
+                emptySymbol="py-2 px-1 fas fa-star"
+                fullSymbol="py-2 px-1 fas fa-star amber-text"
+                placeholderRating={this.recipe.averageRating}
+                placeholderSymbol="py-2 px-1 fas fa-star amber-text"
+                onClick={(value) => this.handleRate(value)}
+              />
             </div>
           </MDBCol>
         </MDBRow>
@@ -154,6 +184,7 @@ const mapDispatchToProps = (dispatch) => ({
   deleteRecipe: (recipeID) => dispatch(deleteRecipe(recipeID)),
   saveRecipe: (recipeID) => dispatch(saveRecipe(recipeID)),
   unSaveRecipe: (recipeID) => dispatch(unSaveRecipe(recipeID)),
+  rateRecipe: (recipe, value) => dispatch(rateRecipe(recipe, value)),
 });
 
 export default compose(connect(null, mapDispatchToProps), withRouter)(Recipe);
