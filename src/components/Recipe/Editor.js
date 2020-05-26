@@ -20,20 +20,30 @@ import Dropzone from "react-dropzone";
 import "./Uploader.css";
 import PropTypes from "prop-types";
 
-const AddRecipeSchema = Yup.object().shape({
-  name: Yup.string().required("Tytuł jest wymagany"),
+const editorSchema = Yup.object().shape({
+  name: Yup.string()
+    .required("The username is required")
+    .min(6, "Nazwa przepisu musi być dłuższa niż 6 znaków")
+    .max(100, "Nazwa przepisu musi być krótsza niż 100 znaków"),
   description: Yup.string(),
   ingredients: Yup.string().required("Podanie składników jest wymagane"),
-  instructions: Yup.string().required("Instrukcje przepisu są wymagane"),
-  photo: Yup.string(),
+  instructions: Yup.string().required("Instrukcje są wymagane"),
 });
 
 class Editor extends Component {
   constructor(props) {
     super(props);
 
+    if (this.props.location.state) {
+      this.recipe = this.props.location.state.recipe;
+    }
+
     this.state = {
       files: [],
+      name: this.recipe ? this.recipe.name : "",
+      description: this.recipe ? this.recipe.description : "",
+      ingredients: this.recipe ? this.recipe.ingredients : "",
+      instructions: this.recipe ? this.recipe.instructions : "",
     };
 
     this.onDrop = (files) => {
@@ -50,6 +60,27 @@ class Editor extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.location.state != this.props.location.state) {
+      if (this.props.location.state) {
+        const recipe = this.props.location.state.recipe;
+        this.setState({
+          name: recipe.name,
+          description: recipe.description,
+          ingredients: recipe.ingredients,
+          instructions: recipe.instructions,
+        });
+      } else {
+        this.setState({
+          name: "",
+          description: "",
+          ingredients: "",
+          instructions: "",
+        });
+      }
+    }
+  }
+
   render() {
     return (
       <MDBContainer fluid className="p-4">
@@ -58,19 +89,17 @@ class Editor extends Component {
             <MDBCardTitle className="text-white">Dodaj przepis!</MDBCardTitle>
           </MDBCardHeader>
           <Formik
+            enableReinitialize={true}
+            validateOnMount={true}
             initialValues={{
-              name: "",
-              description: "",
-              ingredients: "",
-              instructions: "",
+              name: this.state.name,
+              description: this.state.description,
+              ingredients: this.state.ingredients,
+              instructions: this.state.instructions,
             }}
-            isInitialValid={false}
-            validationSchema={AddRecipeSchema}
+            validationSchema={editorSchema}
             onSubmit={(recipe, { setSubmitting }) => {
-              this.props.onSubmit(
-                recipe,
-                this.state.files[0] ? this.state.files[0] : ""
-              );
+              console.log(recipe);
             }}
           >
             {({ isSubmitting, isValid }) => (
@@ -79,7 +108,7 @@ class Editor extends Component {
                   <MDBRow>
                     <MDBCol md="8">
                       <Field name="name">
-                        {({ field, form: { touched, errors }, meta }) => (
+                        {({ field, form, meta }) => (
                           <div>
                             <MDBInput
                               containerClass="mb-0 pb-0"
@@ -108,7 +137,7 @@ class Editor extends Component {
                         )}
                       </Field>
                       <Field name="ingredients">
-                        {({ field, form: { touched, errors }, meta }) => (
+                        {({ field, form, meta }) => (
                           <div>
                             <MDBInput
                               containerClass="mb-0 pb-0"
@@ -125,7 +154,7 @@ class Editor extends Component {
                         )}
                       </Field>
                       <Field name="instructions">
-                        {({ field, form: { touched, errors }, meta }) => (
+                        {({ field, form, meta }) => (
                           <div>
                             <MDBInput
                               containerClass="mb-0 pb-0"
@@ -175,9 +204,9 @@ class Editor extends Component {
                 <MDBCardFooter>
                   <MDBBtn
                     type="submit"
-                    disabled={!isValid}
                     color="teal"
                     className="text-white"
+                    disabled={!isValid}
                   >
                     Wyślij
                   </MDBBtn>

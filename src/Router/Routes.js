@@ -30,9 +30,10 @@ class Routes extends Component {
     return (
       <Switch>
         <Route exact path="/" render={(props) => <Catalog {...props} />} />
-        <Route path="/recipe/:id" component={Recipe} />
+        <Route exact path="/recipe/:id" component={Recipe} />
         <Route path="/user/:userID" component={Profile} />
         <PrivateRoute path="/editor" component={Editor} />
+        <PrivateRoute exact path="/recipe/:id/edit" component={Editor} />
         <PrivateRoute
           path="/cookbook/created"
           component={Catalog}

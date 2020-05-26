@@ -84,7 +84,14 @@ class Recipe extends Component {
       if (this.recipe.userID === currentUserID) {
         return (
           <MDBContainer>
-            <MDBBtn>Edytuj</MDBBtn>
+            <Link
+              to={{
+                pathname: `/recipe/${this.recipe.id}/edit`,
+                state: { recipe: this.recipe },
+              }}
+            >
+              <MDBBtn>Edytuj</MDBBtn>
+            </Link>
             <MDBBtn onClick={this.handleDelete}>Usuń</MDBBtn>
           </MDBContainer>
         );

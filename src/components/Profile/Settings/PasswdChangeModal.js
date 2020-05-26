@@ -1,20 +1,15 @@
 import React from "react";
 import {
-  MDBContainer,
   MDBBtn,
   MDBModal,
   MDBModalBody,
   MDBModalHeader,
   MDBModalFooter,
-  MDBCard,
   MDBInput,
 } from "mdbreact";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import {
-  changePassword,
-  updateProfile,
-} from "../../../store/actions/profileActions";
+import { changePassword } from "../../../store/actions/profileActions";
 import { connect } from "react-redux";
 
 const passwordSchema = Yup.object().shape({
@@ -57,7 +52,6 @@ class PasswdChangeModal extends React.Component {
             newPassword: "",
             confirmNewPassword: "",
           }}
-          isInitialValid={false}
           validationSchema={passwordSchema}
           onSubmit={(data, { setSubmitting }) => {
             console.log("submitting");
@@ -127,7 +121,7 @@ class PasswdChangeModal extends React.Component {
                   </Field>
                 </MDBModalBody>
                 <MDBModalFooter>
-                  <MDBBtn color="danger" type="submit">
+                  <MDBBtn color="danger" type="submit" disabled={!isValid}>
                     Zapisz
                   </MDBBtn>
                 </MDBModalFooter>

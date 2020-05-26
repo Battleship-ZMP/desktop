@@ -181,6 +181,11 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
     });
 };
 
+export const editRecipe = (recipe, photo) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const recipeRef = firestore.collection("recipes").doc(recipe.id);
+};
+
 const setAvgRating = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipeRef = firestore.collection("recipes").doc(recipeID);
