@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBCol, MDBContainer, MDBRating, MDBRow, MDBBtn } from "mdbreact";
+import { MDBCol, MDBContainer, MDBRow, MDBBtn } from "mdbreact";
 import firebase from "firebase/app";
 import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
@@ -12,7 +12,6 @@ import {
 } from "../../store/actions/recipesActions";
 import store from "../../store/store";
 import Rating from "react-rating";
-import { onLog } from "firebase";
 
 class Recipe extends Component {
   constructor(props) {

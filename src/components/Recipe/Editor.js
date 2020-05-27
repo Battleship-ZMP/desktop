@@ -15,7 +15,7 @@ import {
 import * as Yup from "yup";
 import { Formik, Field, Form } from "formik";
 import { connect } from "react-redux";
-import { addRecipe } from "../../store/actions/recipesActions";
+import { addRecipe, editRecipe } from "../../store/actions/recipesActions";
 import Dropzone from "react-dropzone";
 import "./Uploader.css";
 import PropTypes from "prop-types";
@@ -44,24 +44,29 @@ class Editor extends Component {
       description: this.recipe ? this.recipe.description : "",
       ingredients: this.recipe ? this.recipe.ingredients : "",
       instructions: this.recipe ? this.recipe.instructions : "",
+      preview: this.recipe ? this.recipe.photo : "",
     };
 
     this.onDrop = (files) => {
       files.map((file) => {
         Object.assign(file, { preview: URL.createObjectURL(file) });
       });
-      this.setState({ files });
+      this.setState({ files, preview: files[0].preview });
     };
+
+    this.onSubmit = this.onSubmit.bind(this);
+    this.dropzone = this.dropzone.bind(this);
   }
 
   static get propTypes() {
     return {
-      onSubmit: PropTypes.func,
+      addRecipe: PropTypes.func,
+      editRecipe: PropTypes.func,
     };
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.location.state != this.props.location.state) {
+    if (prevProps.location.state !== this.props.location.state) {
       if (this.props.location.state) {
         const recipe = this.props.location.state.recipe;
         this.setState({
@@ -69,6 +74,7 @@ class Editor extends Component {
           description: recipe.description,
           ingredients: recipe.ingredients,
           instructions: recipe.instructions,
+          preview: recipe.photo,
         });
       } else {
         this.setState({
@@ -76,9 +82,52 @@ class Editor extends Component {
           description: "",
           ingredients: "",
           instructions: "",
+          preview: "",
         });
       }
     }
+  }
+
+  onSubmit(recipe, photo) {
+    if (this.props.location.state) {
+      recipe.id = this.props.location.state.recipe.id;
+      this.props.editRecipe(recipe, photo);
+    } else {
+      this.props.addRecipe(recipe, photo);
+    }
+  }
+
+  dropzone() {
+    return (
+      <Dropzone onDrop={this.onDrop} multiple={false} accept="image/*">
+        {({ getRootProps, getInputProps }) => (
+          <section className="d-flex flex-1">
+            {this.state.preview ? (
+              <div
+                {...getRootProps({
+                  className: "imageDropzone",
+                })}
+                style={{
+                  backgroundImage: `url("${this.state.preview}")`,
+                }}
+              >
+                <input {...getInputProps()} />
+              </div>
+            ) : (
+              <div
+                {...getRootProps({
+                  className: "dropzone",
+                })}
+              >
+                <input {...getInputProps()} />
+                <p>Drag 'n' drop some files here, or click to select files</p>
+                <MDBIcon icon="cloud-upload-alt" />
+              </div>
+            )}
+          </section>
+        )}
+      </Dropzone>
+    );
   }
 
   render() {
@@ -99,7 +148,10 @@ class Editor extends Component {
             }}
             validationSchema={editorSchema}
             onSubmit={(recipe, { setSubmitting }) => {
-              console.log(recipe);
+              this.onSubmit(
+                recipe,
+                this.state.files[0] ? this.state.files[0] : ""
+              );
             }}
           >
             {({ isSubmitting, isValid }) => (
@@ -172,32 +224,7 @@ class Editor extends Component {
                       </Field>
                     </MDBCol>
                     <MDBCol md="4" className="d-flex">
-                      <Dropzone
-                        onDrop={this.onDrop}
-                        multiple={false}
-                        accept="image/*"
-                      >
-                        {({ getRootProps, getInputProps }) => (
-                          <section className="d-flex flex-1">
-                            {this.state.files.length > 0 ? (
-                              <img
-                                className="img-fluid"
-                                src={this.state.files[0].preview}
-                                alt={"Uploaded img"}
-                              />
-                            ) : (
-                              <div {...getRootProps({ className: "dropzone" })}>
-                                <input {...getInputProps()} />
-                                <p>
-                                  Drag 'n' drop some files here, or click to
-                                  select files
-                                </p>
-                                <MDBIcon icon="cloud-upload-alt" />
-                              </div>
-                            )}
-                          </section>
-                        )}
-                      </Dropzone>
+                      {this.dropzone()}
                     </MDBCol>
                   </MDBRow>
                 </MDBCardBody>
@@ -220,6 +247,7 @@ class Editor extends Component {
   }
 }
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: (recipe, photo) => dispatch(addRecipe(recipe, photo)),
+  addRecipe: (recipe, photo) => dispatch(addRecipe(recipe, photo)),
+  editRecipe: (recipe, photo) => dispatch(editRecipe(recipe, photo)),
 });
 export default connect(null, mapDispatchToProps)(Editor);
