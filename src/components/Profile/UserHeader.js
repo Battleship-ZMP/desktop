@@ -8,31 +8,21 @@ class UserHeader extends React.Component {
     this.content = this.content.bind(this);
   }
 
-  getAvatar() {
-    if (typeof this.props.profile.photo !== "undefined") {
-      return (
-        <img
-          src={this.props.profile.photo}
-          className="rounded-circle figure-img img-fluid z-depth-1"
-          alt=""
-          style={{ width: "100px", height: "100px" }}
-        />
-      );
-    } else {
-      return (
-        <div className="avatar-circle">
-          <div className="initials">{this.props.profile.userName.charAt(0).toUpperCase()}</div>
-        </div>
-      );
-    }
-  }
-
   content() {
     if (typeof this.props.profile !== "undefined") {
       return (
         <div>
           <figure className="figure d-flex flex-column align-items-center">
-            {this.getAvatar()}
+            <img
+              src={
+                this.props.profile.photo
+                  ? this.props.profile.photo
+                  : "https://firebasestorage.googleapis.com/v0/b/coolrecipes-f4e21.appspot.com/o/placeholders%2Favatar_placeholder.png?alt=media&token=a53a239f-ed1e-4de8-ba7c-80c29f82f52f"
+              }
+              className="rounded-circle figure-img img-fluid z-depth-1"
+              alt=""
+              style={{ width: "100px", height: "100px" }}
+            />
             <figcaption className="figure-caption">
               <h3>{this.props.profile.userName}</h3>
             </figcaption>

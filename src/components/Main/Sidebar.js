@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import store from "../../store/store";
 import firebase from "firebase/app";
 import { connect } from "react-redux";
+import { MDBNav } from "mdbreact";
 
 class Sidebar extends Component {
   profileLink() {
@@ -12,15 +13,49 @@ class Sidebar extends Component {
     ) {
       const currentUser = firebase.auth().currentUser;
       return (
-        <Link
-          to={{
-            pathname: `/user/${currentUser.uid}`,
-            state: { userID: currentUser.uid },
-          }}
-          className="list-group-item list-group-item-action bg-light"
-        >
-          {this.props.profile.userName}
-        </Link>
+        <div className="row align-content-center justify-items-center mt-5 mb-3 flex-column">
+          <Link
+            to={{
+              pathname: `/user/${currentUser.uid}`,
+              state: { userID: currentUser.uid },
+            }}
+          >
+            <img
+              src={
+                this.props.profile.photo
+                  ? this.props.profile.photo
+                  : "https://firebasestorage.googleapis.com/v0/b/coolrecipes-f4e21.appspot.com/o/placeholders%2Favatar_placeholder.png?alt=media&token=a53a239f-ed1e-4de8-ba7c-80c29f82f52f"
+              }
+              className="rounded-circle figure-img img-fluid z-depth-1"
+              alt=""
+              style={{ width: "100px", height: "100px" }}
+            />
+          </Link>
+          <Link
+            to={{
+              pathname: `/user/${currentUser.uid}`,
+              state: { userID: currentUser.uid },
+            }}
+            className="text-center text-dark"
+          >
+            {this.props.profile.userName}
+          </Link>
+        </div>
+      );
+    } else {
+      return (
+        <div className="row align-content-center justify-items-center mt-5 mb-3 flex-column">
+          <img
+            src={process.env.PUBLIC_URL + "/ic_launcher_coolrecipes.png"}
+            className="rounded-circle figure-img img-fluid z-depth-1"
+            alt=""
+            style={{ width: "100px", height: "100px" }}
+          />
+          <div>
+            <span>Cool</span>
+            <span className="font-weight-bold">Recipes</span>
+          </div>
+        </div>
       );
     }
   }
@@ -34,13 +69,13 @@ class Sidebar extends Component {
         <div>
           <Link
             to="/cookbook/created"
-            className="list-group-item list-group-item-action bg-light"
+            className="list-group-item list-group-item-action"
           >
             Własne przepisy
           </Link>
           <Link
             to="/cookbook/favorites"
-            className="list-group-item list-group-item-action bg-light"
+            className="list-group-item list-group-item-action"
           >
             Zapisane przepisy
           </Link>
@@ -51,18 +86,17 @@ class Sidebar extends Component {
 
   render() {
     return (
-      <div className="bg-light border-right" id="sidebar-wrapper">
-        <div className="sidebar-heading">Cool Recipes</div>
-        <div className="list-group list-group-flush ">
-          {this.profileLink()}
+      <div className="border-right" id="sidebar-wrapper">
+        {this.profileLink()}
+        <ul className="list-group">
           <Link
             to="/"
-            className="list-group-item list-group-item-action bg-light"
+            className="list-group-item-action list-group-item d-flex"
           >
-            Katalog
+            <div className="list-item-content list-item-content">Katalog</div>
           </Link>
           {this.protectedLinks()}
-        </div>
+        </ul>
       </div>
     );
   }

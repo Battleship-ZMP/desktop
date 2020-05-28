@@ -42,13 +42,18 @@ export const saveRecipe = (recipeID) => async (dispatch) => {
 
 export const deleteRecipe = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
+  const storageRef = firebase.storage().ref(`recipes/${recipeID}/`);
 
   firestore
     .collection("recipes")
     .doc(recipeID)
     .delete()
     .then((res) => {
-      console.log(res);
+      storageRef.listAll().then((listRes) => {
+        for (const item of listRes.items) {
+          item.delete();
+        };
+      });
     })
     .catch((err) => {
       console.log(err);
@@ -199,24 +204,19 @@ export const editRecipe = (recipe, photo) => async (dispatch) => {
         storageRef.listAll().then(async (listRes) => {
           if (listRes.items.length === 0) {
             uploadTask.then(() => {
-              console.log("uploaded");
               uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
                 recipeRef.update({ photo: downloadURL }).then(() => {
-                  console.log("updated");
                 });
               });
             });
           } else {
             for (const item of listRes.items) {
               await item.delete().then(() => {
-                console.log("deleted");
               });
             }
             uploadTask.then(() => {
               uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                console.log("uploaded");
                 recipeRef.update({ photo: downloadURL }).then(() => {
-                  console.log("updated");
                 });
               });
             });

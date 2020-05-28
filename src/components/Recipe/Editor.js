@@ -19,6 +19,7 @@ import { addRecipe, editRecipe } from "../../store/actions/recipesActions";
 import Dropzone from "react-dropzone";
 import "./Uploader.css";
 import PropTypes from "prop-types";
+import history from "../../Router/history";
 
 const editorSchema = Yup.object().shape({
   name: Yup.string()
@@ -152,6 +153,7 @@ class Editor extends Component {
                 recipe,
                 this.state.files[0] ? this.state.files[0] : ""
               );
+              history.push("/");
             }}
           >
             {({ isSubmitting, isValid }) => (

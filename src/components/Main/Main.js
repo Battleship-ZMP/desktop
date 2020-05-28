@@ -11,7 +11,7 @@ import { signOut } from "../../store/actions/authActions";
 import Sidebar from "./Sidebar";
 import Routes from "../../Router/Routes";
 import { MDBBtn, MDBContainer, MDBIcon, MDBNav, MDBNavbar } from "mdbreact";
-import {Link, Redirect} from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 
 class Header extends Component {
   constructor(props) {
@@ -83,16 +83,18 @@ class Header extends Component {
           //TODO Navbar into separate component
         }
         <div id="page-content-wrapper">
-          <MDBNavbar light className="border-bottom">
-            <MDBBtn
-              className="btn btn-primary"
-              id="menu-toggle"
+          <MDBNavbar light className="border-bottom" scrolling={true}>
+            <button
+              type="button"
+              className="navbar-toggler"
               onClick={this.toggleMenu}
             >
-              Toggle Menu
-            </MDBBtn>
-
-            <MDBNav className="mr-auto"></MDBNav>
+              <span className="navbar-toggler-icon"></span>
+            </button>
+            <MDBNav className="mr-auto">
+              <span>Cool</span>
+              <span className="font-weight-bold">Recipes</span>
+            </MDBNav>
             <MDBNav>{this.authButtons()}</MDBNav>
           </MDBNavbar>
 
