@@ -1,23 +1,16 @@
 import React from "react";
 import {
-  MDBContainer,
   MDBBtn,
   MDBModal,
   MDBModalBody,
   MDBModalHeader,
   MDBModalFooter,
-  MDBCard,
   MDBInput,
 } from "mdbreact";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import {
-  changePassword,
-  deleteUser,
-  updateProfile,
-} from "../../../store/actions/profileActions";
+import { deleteUser } from "../../../store/actions/profileActions";
 import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
 import { withRouter } from "react-router-dom";
 import { compose } from "redux";
 
@@ -57,7 +50,6 @@ class DeleteAccountModal extends React.Component {
             password: "",
             confirmPassword: "",
           }}
-          isInitialValid={false}
           validationSchema={passwordSchema}
           onSubmit={(data, { setSubmitting }) => {
             this.props.deleteUser(data);
@@ -110,7 +102,7 @@ class DeleteAccountModal extends React.Component {
                   </Field>
                 </MDBModalBody>
                 <MDBModalFooter>
-                  <MDBBtn color="danger" type="submit">
+                  <MDBBtn color="danger" type="submit" disabled={!isValid}>
                     Wyślij
                   </MDBBtn>
                 </MDBModalFooter>

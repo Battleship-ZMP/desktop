@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { MDBCol, MDBContainer, MDBRating, MDBRow, MDBBtn } from "mdbreact";
+import { MDBCol, MDBContainer, MDBRow, MDBBtn } from "mdbreact";
 import firebase from "firebase/app";
 import { deleteRecipe } from "../../store/actions/recipesActions.js";
 import { connect } from "react-redux";
@@ -12,7 +12,6 @@ import {
 } from "../../store/actions/recipesActions";
 import store from "../../store/store";
 import Rating from "react-rating";
-import { onLog } from "firebase";
 
 class Recipe extends Component {
   constructor(props) {
@@ -84,7 +83,14 @@ class Recipe extends Component {
       if (this.recipe.userID === currentUserID) {
         return (
           <MDBContainer>
-            <MDBBtn>Edytuj</MDBBtn>
+            <Link
+              to={{
+                pathname: `/recipe/${this.recipe.id}/edit`,
+                state: { recipe: this.recipe },
+              }}
+            >
+              <MDBBtn>Edytuj</MDBBtn>
+            </Link>
             <MDBBtn onClick={this.handleDelete}>Usuń</MDBBtn>
           </MDBContainer>
         );

@@ -181,6 +181,54 @@ export const addRecipe = (recipe, photo) => async (dispatch) => {
     });
 };
 
+export const editRecipe = (recipe, photo) => async (dispatch) => {
+  const firestore = firebase.firestore();
+  const recipeRef = firestore.collection("recipes").doc(recipe.id);
+  const storageRef = firebase.storage().ref(`recipes/${recipe.id}/`);
+
+  recipeRef
+    .update({
+      name: recipe.name,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+    })
+    .then(() => {
+      if (photo !== "") {
+        const uploadTask = storageRef.child(photo.name).put(photo);
+        storageRef.listAll().then(async (listRes) => {
+          if (listRes.items.length === 0) {
+            uploadTask.then(() => {
+              console.log("uploaded");
+              uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                recipeRef.update({ photo: downloadURL }).then(() => {
+                  console.log("updated");
+                });
+              });
+            });
+          } else {
+            for (const item of listRes.items) {
+              await item.delete().then(() => {
+                console.log("deleted");
+              });
+            }
+            uploadTask.then(() => {
+              uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                console.log("uploaded");
+                recipeRef.update({ photo: downloadURL }).then(() => {
+                  console.log("updated");
+                });
+              });
+            });
+          }
+        });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 const setAvgRating = (recipeID) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipeRef = firestore.collection("recipes").doc(recipeID);

@@ -58,6 +58,7 @@ class Settings extends React.Component {
           </MDBCardHeader>
           <MDBCardBody>
             <Formik
+              validateOnMount={true}
               initialValues={{
                 userName: this.props.profile.userName,
                 bio: this.props.profile.bio
