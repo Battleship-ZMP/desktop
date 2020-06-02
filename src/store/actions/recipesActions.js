@@ -60,24 +60,42 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
     });
 };
 
-export const fetchRecipes = (filter, order = ["name", "asc"]) => async (
+export const fetchRecipes = (filter, order = ["name", "asc"], searchString = null) => async (
   dispatch
 ) => {
   const firestore = firebase.firestore();
   const recipes = [];
+  let promise = firestore
+    .collection("recipes")
+    .orderBy(order[0], order[1])
+    .limit(6)
+    .get();
 
-  const promise = filter
-    ? firestore
+  if (filter) {
+    promise = firestore
+      .collection("recipes")
+      .where(filter[0], filter[1], filter[2])
+      .orderBy(order[0], order[1])
+      .limit(6)
+      .get();
+  }
+
+  if (searchString) {
+    if (filter) {
+      promise = firestore
         .collection("recipes")
+        .where("name", "==", searchString)
         .where(filter[0], filter[1], filter[2])
-        .orderBy(order[0], order[1])
-        .limit(6)
-        .get()
-    : firestore
-        .collection("recipes")
-        .orderBy(order[0], order[1])
         .limit(6)
         .get();
+    } else {
+      promise = firestore
+        .collection("recipes")
+        .where("name", "==", searchString)
+        .limit(6)
+        .get();
+    }
+  }
 
   promise.then(async (recipesQuery) => {
     for (const doc of recipesQuery.docs) {

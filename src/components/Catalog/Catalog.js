@@ -4,7 +4,10 @@ import List from "./List";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import SearchBar from "./SearchBar";
-import { fetchRecipes } from "../../store/actions/recipesActions";
+import {
+  fetchRecipes,
+  searchRecipes,
+} from "../../store/actions/recipesActions";
 
 class Catalog extends Component {
   constructor(props) {
@@ -13,6 +16,7 @@ class Catalog extends Component {
     this.props.fetchRecipes(this.props.filter ? this.props.filter : null);
 
     this.handleSort = this.handleSort.bind(this);
+    this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -23,8 +27,8 @@ class Catalog extends Component {
 
   static get propTypes() {
     return {
-      fetchAllRecipes: PropTypes.func,
-      fetchFilteredRecipes: PropTypes.func,
+      fetchRecipes: PropTypes.func,
+      searchRecipes: PropTypes.func,
       recipes: PropTypes.array,
       filter: PropTypes.array,
     };
@@ -37,10 +41,21 @@ class Catalog extends Component {
     );
   }
 
+  handleSearch(searchString) {
+    this.props.fetchRecipes(
+      this.props.filter ? this.props.filter : null,
+      ["name", "asc"],
+      searchString
+    );
+  }
+
   render() {
     return (
       <MDBContainer fluid>
-        <SearchBar handleSort={this.handleSort} />
+        <SearchBar
+          handleSort={this.handleSort}
+          handleSearch={this.handleSearch}
+        />
         <List recipes={this.props.recipes} />
       </MDBContainer>
     );
@@ -54,7 +69,8 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchRecipes: (filter, order) => dispatch(fetchRecipes(filter, order)),
+  fetchRecipes: (order, filter, searchString) =>
+    dispatch(fetchRecipes(order, filter, searchString)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Catalog);
