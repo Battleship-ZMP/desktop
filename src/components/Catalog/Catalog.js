@@ -10,17 +10,14 @@ class Catalog extends Component {
   constructor(props) {
     super(props);
 
-    this.props.fetchRecipes(this.props.filter ? this.props.filter : null, [
-      "name",
-      "asc",
-    ]);
+    this.props.fetchRecipes(this.props.filter ? this.props.filter : null);
 
     this.handleSort = this.handleSort.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.filter !== prevProps.filter) {
-      this.props.fetchRecipes(this.props.filter, ["name", "asc"]);
+      this.props.fetchRecipes(this.props.filter);
     }
   }
 

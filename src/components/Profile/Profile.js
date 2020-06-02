@@ -34,8 +34,7 @@ class Profile extends React.Component {
     this.props.fetchProfile(this.state.userID);
 
     const filter = ["userID", "==", this.state.userID];
-    const order = ["rating", "asc"];
-    this.props.fetchRecipes(filter, order);
+    this.props.fetchRecipes(filter);
   }
 
   content() {

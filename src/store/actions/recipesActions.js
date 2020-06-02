@@ -60,7 +60,9 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
     });
 };
 
-export const fetchRecipes = (filter = null, order) => async (dispatch) => {
+export const fetchRecipes = (filter, order = ["name", "asc"]) => async (
+  dispatch
+) => {
   const firestore = firebase.firestore();
   const recipes = [];
 
