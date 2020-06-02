@@ -79,11 +79,12 @@ class Header extends Component {
       >
         <Sidebar />
 
-        {
-          //TODO Navbar into separate component
-        }
         <div id="page-content-wrapper">
-          <MDBNavbar light className="border-bottom" scrolling={true}>
+          <MDBNavbar
+            light
+            className="border-bottom"
+            style={{ boxShadow: "none" }}
+          >
             <button
               type="button"
               className="navbar-toggler"

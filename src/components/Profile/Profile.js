@@ -4,7 +4,7 @@ import { MDBContainer } from "mdbreact";
 import UserHeader from "./UserHeader";
 import { fetchProfile } from "../../store/actions/profileActions";
 import List from "../Catalog/List";
-import { fetchFilteredRecipes } from "../../store/actions/recipesActions";
+import { fetchRecipes } from "../../store/actions/recipesActions";
 import store from "../../store/store";
 import firebase from "firebase/app";
 import Settings from "./Settings/Settings";
@@ -35,7 +35,7 @@ class Profile extends React.Component {
 
     const filter = ["userID", "==", this.state.userID];
     const order = ["rating", "asc"];
-    this.props.fetchFilteredRecipes(filter, order);
+    this.props.fetchRecipes(filter, order);
   }
 
   content() {
@@ -70,8 +70,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
   fetchProfile: (userID) => dispatch(fetchProfile(userID)),
-  fetchFilteredRecipes: (filter, order) =>
-    dispatch(fetchFilteredRecipes(filter, order)),
+  fetchRecipes: (filter, order) => dispatch(fetchRecipes(filter, order)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profile);

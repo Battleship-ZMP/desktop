@@ -52,7 +52,7 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
       storageRef.listAll().then((listRes) => {
         for (const item of listRes.items) {
           item.delete();
-        };
+        }
       });
     })
     .catch((err) => {
@@ -60,83 +60,51 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
     });
 };
 
-export const fetchAllRecipes = (order) => async (dispatch) => {
+export const fetchRecipes = (filter = null, order) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
 
-  firestore
-    .collection("recipes")
-    .orderBy(order[0], order[1])
-    .limit(6)
-    .get()
-    .then(async (recipesQuery) => {
-      for (const doc of recipesQuery.docs) {
-        const recipe = doc.data();
-        recipe.date = recipe.date.toDate().toLocaleString();
-        recipe.id = doc.id;
+  const promise = filter
+    ? firestore
+        .collection("recipes")
+        .where(filter[0], filter[1], filter[2])
+        .orderBy(order[0], order[1])
+        .limit(6)
+        .get()
+    : firestore
+        .collection("recipes")
+        .orderBy(order[0], order[1])
+        .limit(6)
+        .get();
 
-        await firestore
-          .collection("users")
-          .doc(doc.data().userID)
-          .get()
-          .then((author) => {
-            if (author.data() === undefined) {
-              recipe.userName = null;
-            } else {
-              recipe.userName = author.data().userName;
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+  promise.then(async (recipesQuery) => {
+    for (const doc of recipesQuery.docs) {
+      const recipe = doc.data();
+      recipe.date = recipe.date.toDate().toLocaleString();
+      recipe.id = doc.id;
 
-        recipes.push(recipe);
-      }
-      dispatch({
-        type: FETCHRECIPES_SUCCESS,
-        payload: recipes,
-      });
+      await firestore
+        .collection("users")
+        .doc(doc.data().userID)
+        .get()
+        .then((author) => {
+          if (author.data() === undefined) {
+            recipe.userName = null;
+          } else {
+            recipe.userName = author.data().userName;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      recipes.push(recipe);
+    }
+    dispatch({
+      type: FETCHRECIPES_SUCCESS,
+      payload: recipes,
     });
-};
-
-export const fetchFilteredRecipes = (filter, order) => async (dispatch) => {
-  const firestore = firebase.firestore();
-  const recipes = [];
-
-  firestore
-    .collection("recipes")
-    .where(filter[0], filter[1], filter[2])
-    .orderBy(order[0], order[1])
-    .limit(6)
-    .get()
-    .then(async (recipesQuery) => {
-      for (const doc of recipesQuery.docs) {
-        const recipe = doc.data();
-        recipe.date = recipe.date.toDate().toLocaleString();
-        recipe.id = doc.id;
-
-        await firestore
-          .collection("users")
-          .doc(doc.data().userID)
-          .get()
-          .then((author) => {
-            if (author.data() === undefined) {
-              recipe.userName = null;
-            } else {
-              recipe.userName = author.data().userName;
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-
-        recipes.push(recipe);
-      }
-      dispatch({
-        type: FETCHRECIPES_SUCCESS,
-        payload: recipes,
-      });
-    });
+  });
 };
 
 export const addRecipe = (recipe, photo) => async (dispatch) => {
@@ -205,19 +173,16 @@ export const editRecipe = (recipe, photo) => async (dispatch) => {
           if (listRes.items.length === 0) {
             uploadTask.then(() => {
               uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                recipeRef.update({ photo: downloadURL }).then(() => {
-                });
+                recipeRef.update({ photo: downloadURL }).then(() => {});
               });
             });
           } else {
             for (const item of listRes.items) {
-              await item.delete().then(() => {
-              });
+              await item.delete().then(() => {});
             }
             uploadTask.then(() => {
               uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                recipeRef.update({ photo: downloadURL }).then(() => {
-                });
+                recipeRef.update({ photo: downloadURL }).then(() => {});
               });
             });
           }

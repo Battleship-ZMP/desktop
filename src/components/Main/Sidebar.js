@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import store from "../../store/store";
 import firebase from "firebase/app";
 import { connect } from "react-redux";
-import { MDBNav } from "mdbreact";
 
 class Sidebar extends Component {
   profileLink() {
@@ -19,6 +18,7 @@ class Sidebar extends Component {
               pathname: `/user/${currentUser.uid}`,
               state: { userID: currentUser.uid },
             }}
+            className="d-flex justify-content-center"
           >
             <img
               src={
@@ -51,7 +51,7 @@ class Sidebar extends Component {
             alt=""
             style={{ width: "100px", height: "100px" }}
           />
-          <div>
+          <div className="text-center">
             <span>Cool</span>
             <span className="font-weight-bold">Recipes</span>
           </div>

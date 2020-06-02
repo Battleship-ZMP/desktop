@@ -4,27 +4,23 @@ import List from "./List";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import SearchBar from "./SearchBar";
-import {
-  fetchAllRecipes,
-  fetchFilteredRecipes,
-} from "../../store/actions/recipesActions";
+import { fetchRecipes } from "../../store/actions/recipesActions";
 
 class Catalog extends Component {
   constructor(props) {
     super(props);
 
-    if (this.props.filter) {
-      this.props.fetchFilteredRecipes(this.props.filter, ["name", "asc"]);
-    } else {
-      this.props.fetchAllRecipes(["name", "asc"]);
-    }
+    this.props.fetchRecipes(this.props.filter ? this.props.filter : null, [
+      "name",
+      "asc",
+    ]);
 
     this.handleSort = this.handleSort.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (this.props.filter !== prevProps.filter) {
-      this.props.fetchFilteredRecipes(this.props.filter, ["name", "asc"]);
+      this.props.fetchRecipes(this.props.filter, ["name", "asc"]);
     }
   }
 
@@ -38,12 +34,10 @@ class Catalog extends Component {
   }
 
   handleSort(order) {
-    console.log(order);
-    if (this.props.filter) {
-      this.props.fetchFilteredRecipes(this.props.filter, order);
-    } else {
-      this.props.fetchAllRecipes(order);
-    }
+    this.props.fetchRecipes(
+      this.props.filter ? this.props.filter : null,
+      order
+    );
   }
 
   render() {
@@ -63,9 +57,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-  fetchAllRecipes: (order) => dispatch(fetchAllRecipes(order)),
-  fetchFilteredRecipes: (filter, order) =>
-    dispatch(fetchFilteredRecipes(filter, order)),
+  fetchRecipes: (filter, order) => dispatch(fetchRecipes(filter, order)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Catalog);
