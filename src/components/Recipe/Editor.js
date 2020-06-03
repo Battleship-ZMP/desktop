@@ -121,7 +121,10 @@ class Editor extends Component {
                 })}
               >
                 <input {...getInputProps()} />
-                <p>Drag 'n' drop some files here, or click to select files</p>
+                <p>
+                  Przesuń i upuść zdjęcie swojego przepisu, lub kliknij aby
+                  wybrać plik
+                </p>
                 <MDBIcon icon="cloud-upload-alt" />
               </div>
             )}

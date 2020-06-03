@@ -3,7 +3,7 @@ import "firebase/firestore";
 import "firebase/auth";
 import "firebase/storage";
 import "firebase/database";
-import { FETCHRECIPES_SUCCESS } from "./types";
+import { FETCHRECIPES_START, FETCHRECIPES_SUCCESS } from "./types";
 import history from "../../Router/history";
 
 export const unSaveRecipe = (recipeID) => async (dispatch) => {
@@ -60,9 +60,11 @@ export const deleteRecipe = (recipeID) => async (dispatch) => {
     });
 };
 
-export const fetchRecipes = (filter, order = ["name", "asc"], searchString = null) => async (
-  dispatch
-) => {
+export const fetchRecipes = (
+  filter,
+  order = ["name", "asc"],
+  searchString = null
+) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
   let promise = firestore
@@ -96,6 +98,10 @@ export const fetchRecipes = (filter, order = ["name", "asc"], searchString = nul
         .get();
     }
   }
+
+  dispatch({
+    type: FETCHRECIPES_START,
+  });
 
   promise.then(async (recipesQuery) => {
     for (const doc of recipesQuery.docs) {

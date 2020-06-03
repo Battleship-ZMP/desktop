@@ -38,10 +38,10 @@ class LoginModal extends Component {
   render() {
     return (
       <div>
-        <MDBBtn onClick={this.toggle}>Login</MDBBtn>
+        <MDBBtn onClick={this.toggle}>Zaloguj</MDBBtn>
 
         <MDBModal isOpen={this.state.show} toggle={this.toggle}>
-          <MDBModalHeader>Login</MDBModalHeader>
+          <MDBModalHeader>Zaloguj się!</MDBModalHeader>
           <Formik
             initialValues={{
               email: "",
@@ -80,7 +80,7 @@ class LoginModal extends Component {
                     className="btn btn-primary"
                     disabled={!isValid}
                   >
-                    Login
+                    Zaloguj
                   </button>
                 </MDBModalFooter>
               </Form>

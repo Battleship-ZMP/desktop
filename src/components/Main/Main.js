@@ -55,10 +55,10 @@ class Header extends Component {
           <Link to="/editor">
             <MDBBtn>
               <MDBIcon icon="plus" className="mr-1" />
-              <span>Add recipe</span>
+              <span>Dodaj przepis</span>
             </MDBBtn>
           </Link>
-          <MDBBtn onClick={this.handleClick}>Logout</MDBBtn>
+          <MDBBtn onClick={this.handleClick}>Wyloguj</MDBBtn>
         </MDBContainer>
       );
     } else {

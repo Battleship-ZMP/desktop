@@ -106,13 +106,13 @@ class SearchBar extends Component {
                 type="submit"
                 onClick={this.handleSearch}
               >
-                Search
+                Szukaj
               </MDBBtn>
             </div>
             <input
               className="form-control my-0 py-1"
               type="text"
-              placeholder="Search"
+              placeholder="Wpisz nazwę szukanego przepisu"
               aria-label="Search"
               value={this.state.searchString}
               onChange={this.handleChange}

@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import SearchBar from "./SearchBar";
 import {
   fetchRecipes,
-  searchRecipes,
 } from "../../store/actions/recipesActions";
 
 class Catalog extends Component {
@@ -17,12 +16,6 @@ class Catalog extends Component {
 
     this.handleSort = this.handleSort.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (this.props.filter !== prevProps.filter) {
-      this.props.fetchRecipes(this.props.filter);
-    }
   }
 
   static get propTypes() {
@@ -65,6 +58,7 @@ class Catalog extends Component {
 const mapStateToProps = (state) => {
   return {
     recipes: state.recipes.data,
+    isLoading: state.recipes.isLoading,
   };
 };
 

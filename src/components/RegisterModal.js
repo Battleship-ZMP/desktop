@@ -30,7 +30,6 @@ const SignUpSchema = Yup.object().shape({
 });
 
 class RegisterModal extends Component {
-  //TODO add error display
   constructor(props) {
     super(props);
     this.state = {
@@ -47,11 +46,11 @@ class RegisterModal extends Component {
     return (
       <div>
         <MDBBtn variant="primary" onClick={this.toggle}>
-          Register
+          Rejestracja
         </MDBBtn>
 
         <MDBModal isOpen={this.state.show} toggle={this.toggle}>
-          <MDBModalHeader>Register</MDBModalHeader>
+          <MDBModalHeader>Zarejestruj się!</MDBModalHeader>
           <Formik
             initialValues={{
               userName: "",
@@ -121,7 +120,7 @@ class RegisterModal extends Component {
                     className="btn btn-primary"
                     disabled={!isValid}
                   >
-                    Register
+                    Zarejestruj
                   </button>
                 </MDBModalFooter>
               </Form>
