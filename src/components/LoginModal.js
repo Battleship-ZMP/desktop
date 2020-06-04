@@ -64,7 +64,7 @@ class LoginModal extends Component {
             password: "",
           }}
           validationSchema={LoginSchema}
-          onSubmit={(credentials, { setSubmitting }) => {
+          onSubmit={(credentials) => {
             this.props.signIn(credentials);
           }}
         >
@@ -141,7 +141,7 @@ class LoginModal extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    authError: state.auth.error,
+    authError: state.auth.signInError,
   };
 };
 

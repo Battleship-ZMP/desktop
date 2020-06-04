@@ -26,9 +26,19 @@ export const signUp = (credentials) => async (dispatch) => {
       });
     })
     .catch((err) => {
+      let msg = "Coś poszło nie tak!";
+
+      switch (err.code) {
+        case "auth/email-already-in-use":
+          msg = "Email jest już zajęty";
+          break;
+        default:
+          msg = "coś poszło nie tak!";
+      }
+
       dispatch({
         type: SIGNUP_ERROR,
-        payload: err,
+        payload: msg,
       });
     });
 };
@@ -44,8 +54,6 @@ export const signIn = (credentials) => async (dispatch) => {
       });
     })
     .catch((err) => {
-      console.log(err);
-
       let msg = "Coś poszło nie tak!";
 
       switch (err.code) {

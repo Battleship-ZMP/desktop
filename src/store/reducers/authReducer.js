@@ -16,32 +16,30 @@ export const authReducer = (state = initState, action) => {
     case SIGNUP_SUCCESS:
       return {
         ...state,
-        error: null,
+        signUpError: null,
       };
     case SIGNUP_ERROR:
       return {
         ...state,
-        error: action.payload,
+        signUpError: action.payload,
       };
     case SIGNIN_SUCCESS:
       return {
         ...state,
-        error: null,
+        signInError: null,
       };
     case SIGNIN_ERROR:
       return {
         ...state,
-        error: action.payload,
+        signInError: action.payload,
       };
     case SIGNOUT_SUCCESS:
       return {
         ...state,
-        error: null,
       };
     case SIGNOUT_ERROR:
       return {
         ...state,
-        error: null,
       };
     default:
       return state;
