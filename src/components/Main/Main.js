@@ -80,17 +80,16 @@ class Header extends Component {
         <Sidebar />
 
         <div id="page-content-wrapper">
-          <MDBNavbar
-            light
-            className="border-bottom"
-            style={{ boxShadow: "none" }}
-          >
+          <MDBNavbar className="border-bottom" style={{ boxShadow: "none" }}>
             <button
               type="button"
               className="navbar-toggler"
               onClick={this.toggleMenu}
             >
-              <span className="navbar-toggler-icon"></span>
+              <MDBIcon
+                icon="bars"
+                className="navbar-toggler-icon d-flex align-items-center"
+              ></MDBIcon>
             </button>
             <MDBNav className="mr-auto">
               <span>Cool</span>
