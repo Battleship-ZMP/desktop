@@ -8,6 +8,10 @@ import { signIn } from "../store/actions/authActions";
 import { connect } from "react-redux";
 import {
   MDBBtn,
+  MDBCol,
+  MDBIcon,
+  MDBInput,
+  MDBInputGroup,
   MDBModal,
   MDBModalBody,
   MDBModalFooter,
@@ -22,78 +26,113 @@ const LoginSchema = Yup.object().shape({
 });
 
 class LoginModal extends Component {
-  //TODO add error display
   constructor(props) {
     super(props);
+
     this.state = {
-      show: false,
+      showModal: false,
+      showPassword: false,
     };
-    this.toggle = this.toggle.bind(this);
+    this.toggleModal = this.toggleModal.bind(this);
+    this.togglePassword = this.togglePassword.bind(this);
   }
 
-  toggle() {
-    this.setState(this.state.show ? { show: false } : { show: true });
+  togglePassword() {
+    this.setState(
+      this.state.showPassword ? { showPassword: false } : { showPassword: true }
+    );
+  }
+
+  toggleModal() {
+    this.setState(
+      this.state.showModal ? { showModal: false } : { showModal: true }
+    );
   }
 
   render() {
     return (
       <div>
-        <MDBBtn onClick={this.toggle}>Zaloguj</MDBBtn>
+        <MDBBtn onClick={this.toggleModal}>Zaloguj</MDBBtn>
 
-        <MDBModal isOpen={this.state.show} toggle={this.toggle}>
-          <MDBModalHeader>Zaloguj się!</MDBModalHeader>
-          <Formik
-            initialValues={{
-              email: "",
-              password: "",
-            }}
-            validationSchema={LoginSchema}
-            onSubmit={(credentials, { setSubmitting }) => {
-              this.props.onSubmit(credentials);
-            }}
-          >
-            {({ isSubmitting, isValid }) => (
-              <Form>
+        <Formik
+          initialValues={{
+            email: "",
+            password: "",
+          }}
+          validationSchema={LoginSchema}
+          onSubmit={(credentials, { setSubmitting }) => {
+            this.props.signIn(credentials);
+          }}
+        >
+          {({ isSubmitting, isValid }) => (
+            <Form>
+              <MDBModal isOpen={this.state.showModal} toggle={this.toggleModal}>
+                <MDBModalHeader
+                  className="teal text-white"
+                  toggle={this.toggleModal}
+                >
+                  zaloguj się!
+                </MDBModalHeader>
                 <MDBModalBody>
-                  <div className="form-group">
-                    <label htmlFor="email">Email</label>
-                    <Field
-                      className="form-control"
-                      type="email"
-                      name="email"
-                      placeholder="Email"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label htmlFor="email">Password</label>
-                    <Field
-                      className="form-control"
-                      type="password"
-                      name="password"
-                      placeholder="Your password..."
-                    />
-                  </div>
+                  <Field name="email">
+                    {({ field, meta }) => (
+                      <>
+                        <MDBInput
+                          containerClass="mb-0 pb-0"
+                          type="email"
+                          label="Email"
+                          style={{ marginLeft: "0" }}
+                          {...field}
+                        />
+                        {meta.touched && meta.error && (
+                          <small className="text-danger m-0 p-0">
+                            {meta.error}
+                          </small>
+                        )}
+                      </>
+                    )}
+                  </Field>
+                  <Field name="password">
+                    {({ field, meta }) => (
+                      <>
+                        <MDBInput
+                          containerClass="mb-0 pb-0"
+                          type={this.state.showPassword ? "text" : "password"}
+                          label="Hasło"
+                          style={{ marginLeft: "0" }}
+                          {...field}
+                        >
+                          <MDBIcon
+                            icon="eye"
+                            className={`btn-toggle-pass ${
+                              this.state.showPassword ? "active" : ""
+                            }`}
+                            onClick={this.togglePassword}
+                          />
+                        </MDBInput>
+                        {meta.touched && meta.error && (
+                          <small className="text-danger m-0 p-0">
+                            {meta.error}
+                          </small>
+                        )}
+                      </>
+                    )}
+                  </Field>
                 </MDBModalBody>
                 <MDBModalFooter>
-                  <button
-                    type="submit"
-                    className="btn btn-primary"
-                    disabled={!isValid}
-                  >
-                    Zaloguj
-                  </button>
+                  <MDBBtn type="submit">Zaloguj</MDBBtn>
                 </MDBModalFooter>
-              </Form>
-            )}
-          </Formik>
-        </MDBModal>
+              </MDBModal>
+            </Form>
+          )}
+        </Formik>
       </div>
     );
   }
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  onSubmit: (credentials) => dispatch(signIn(credentials)),
+  signIn: (credentials) => dispatch(signIn(credentials)),
 });
 
 export default connect(null, mapDispatchToProps)(LoginModal);
