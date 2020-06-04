@@ -17,9 +17,9 @@ import {
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
-    .email("Invalid email.")
-    .required("The email is required."),
-  password: Yup.string().required("The passoword is required."),
+    .email("Niepoprawny adres email")
+    .required("Adres email jest wymagany"),
+  password: Yup.string().required("Hasło jest wymagane"),
 });
 
 class LoginModal extends Component {
@@ -68,7 +68,7 @@ class LoginModal extends Component {
             this.props.signIn(credentials);
           }}
         >
-          {({ isSubmitting, isValid }) => (
+          {({isValid }) => (
             <Form>
               <MDBModal isOpen={this.state.showModal} toggle={this.toggleModal}>
                 <MDBModalHeader
