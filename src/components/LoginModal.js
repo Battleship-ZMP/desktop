@@ -3,15 +3,12 @@
 import React, { Component } from "react";
 import { Formik, Field, Form } from "formik";
 import * as Yup from "yup";
-
 import { signIn } from "../store/actions/authActions";
 import { connect } from "react-redux";
 import {
   MDBBtn,
-  MDBCol,
   MDBIcon,
   MDBInput,
-  MDBInputGroup,
   MDBModal,
   MDBModalBody,
   MDBModalFooter,
@@ -32,9 +29,16 @@ class LoginModal extends Component {
     this.state = {
       showModal: false,
       showPassword: false,
+      authError: null,
     };
     this.toggleModal = this.toggleModal.bind(this);
     this.togglePassword = this.togglePassword.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.authError !== this.props.authError) {
+      this.setState({ authError: this.props.authError });
+    }
   }
 
   togglePassword() {
@@ -71,7 +75,7 @@ class LoginModal extends Component {
                   className="teal text-white"
                   toggle={this.toggleModal}
                 >
-                  zaloguj się!
+                  Zaloguj się!
                 </MDBModalHeader>
                 <MDBModalBody>
                   <Field name="email">
@@ -107,6 +111,7 @@ class LoginModal extends Component {
                             className={`btn-toggle-pass ${
                               this.state.showPassword ? "active" : ""
                             }`}
+                            style={{ cursor: "pointer" }}
                             onClick={this.togglePassword}
                           />
                         </MDBInput>
@@ -118,6 +123,9 @@ class LoginModal extends Component {
                       </>
                     )}
                   </Field>
+                  <small className="text-danger m-0 p-0">
+                    {this.state.authError}
+                  </small>
                 </MDBModalBody>
                 <MDBModalFooter>
                   <MDBBtn type="submit">Zaloguj</MDBBtn>
@@ -131,8 +139,14 @@ class LoginModal extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    authError: state.auth.error,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
   signIn: (credentials) => dispatch(signIn(credentials)),
 });
 
-export default connect(null, mapDispatchToProps)(LoginModal);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

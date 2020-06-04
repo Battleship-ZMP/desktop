@@ -1,4 +1,4 @@
-import {FETCHPROFILE_SUCCESS} from "../actions/types";
+import { FETCHPROFILE_SUCCESS } from "../actions/types";
 
 const initState = {};
 
@@ -9,7 +9,6 @@ export const profileReducer = (state = initState, action) => {
         ...state,
         data: action.payload,
       };
-
     default:
       return state;
   }

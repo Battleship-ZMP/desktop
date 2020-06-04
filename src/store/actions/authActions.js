@@ -9,8 +9,6 @@ import {
 import firebase from "firebase/app";
 
 export const signUp = (credentials) => async (dispatch) => {
-  //TODO profile setup to separate action
-  //TODO add profile download on signIn
   const firestore = firebase.firestore();
   firebase
     .auth()
@@ -46,9 +44,26 @@ export const signIn = (credentials) => async (dispatch) => {
       });
     })
     .catch((err) => {
+      console.log(err);
+
+      let msg = "Coś poszło nie tak!";
+
+      switch (err.code) {
+        case "auth/wrong-password":
+          msg = "Błędne hasło";
+          break;
+        case "auth/user-not-found":
+          msg = "Nie znaleziono użytkownika";
+          break;
+        case "auth/too-many-requests":
+          msg = "Za dużo nieudanych prób logowania. Spróbuj później";
+          break;
+        default:
+          msg = "coś poszło nie tak!";
+      }
       dispatch({
         type: SIGNIN_ERROR,
-        payload: err,
+        payload: msg,
       });
     });
 };
