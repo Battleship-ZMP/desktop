@@ -64,10 +64,9 @@ export const fetchRecipes = (
   filter,
   order = ["name", "asc"],
   searchString = null
-) => async (dispatch, getState) => {
+) => async (dispatch) => {
   const firestore = firebase.firestore();
   const recipes = [];
-
   let promise = firestore
     .collection("recipes")
     .orderBy(order[0], order[1])
@@ -104,13 +103,13 @@ export const fetchRecipes = (
     type: FETCHRECIPES_START,
   });
 
-  promise.then((recipesQuery) => {
-    recipesQuery.forEach((doc) => {
+  promise.then(async (recipesQuery) => {
+    for (const doc of recipesQuery.docs) {
       const recipe = doc.data();
       recipe.date = recipe.date.toDate().toLocaleString();
       recipe.id = doc.id;
 
-      firestore
+      await firestore
         .collection("users")
         .doc(doc.data().userID)
         .get()
@@ -126,8 +125,7 @@ export const fetchRecipes = (
         });
 
       recipes.push(recipe);
-    });
-
+    }
     dispatch({
       type: FETCHRECIPES_SUCCESS,
       payload: recipes,

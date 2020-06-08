@@ -10,18 +10,18 @@ class Catalog extends Component {
   constructor(props) {
     super(props);
 
-    this.props.fetchRecipes(this.props.filter);
+    this.props.fetchRecipes(this.props.filter ? this.props.filter : null);
 
     this.handleSort = this.handleSort.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.filter[0] !== this.props.filter[0]) {
+    if (prevProps.filter && prevProps.filter[0] !== this.props.filter[0]) {
       if (prevProps.isLoading) {
-        setTimeout(this.props.fetchRecipes(this.props.filter), 500);
+        setTimeout(this.props.fetchRecipes(this.props.filter ? this.props.filter : null), 500);
       } else {
-        this.props.fetchRecipes(this.props.filter);
+        this.props.fetchRecipes(this.props.filter ? this.props.filter : null);
       }
     }
   }
