@@ -1,7 +1,7 @@
 import { Redirect, Route } from "react-router-dom";
 import React from "react";
-import { useSelector } from "react-redux";
 import { isLoaded, isEmpty } from "react-redux-firebase";
+import { useSelector } from "react-redux";
 
 function PrivateRoute({ component: Component, ...rest }) {
   const auth = useSelector((state) => state.firebase.auth);
@@ -23,5 +23,4 @@ function PrivateRoute({ component: Component, ...rest }) {
     />
   );
 }
-
 export default PrivateRoute;

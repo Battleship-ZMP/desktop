@@ -29,7 +29,11 @@ class Routes extends Component {
   render() {
     return (
       <Switch>
-        <Route exact path="/" render={(props) => <Catalog {...props} />} />
+        <Route
+          exact
+          path="/"
+          render={(props) => <Catalog {...props} filter={["name", ">", ""]} />}
+        />
         <Route exact path="/recipe/:id" component={Recipe} />
         <Route path="/user/:userID" component={Profile} />
         <PrivateRoute path="/editor" component={Editor} />
