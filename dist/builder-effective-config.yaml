@@ -1,0 +1,13 @@
+directories:
+  output: dist
+  buildResources: assets
+files:
+  - filter:
+      - build/**/*
+extraMetadata:
+  main: build/electron.js
+appId: your.id
+linux:
+  category: your.app.category.type
+extends: react-cra
+electronVersion: 8.3.0
