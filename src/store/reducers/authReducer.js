@@ -7,25 +7,31 @@ import {
   SIGNUP_SUCCESS,
 } from "../actions/types";
 
-const initState = {};
+const initState = {
+  error: null,
+};
 
 export const authReducer = (state = initState, action) => {
   switch (action.type) {
     case SIGNUP_SUCCESS:
       return {
         ...state,
+        signUpError: null,
       };
     case SIGNUP_ERROR:
       return {
         ...state,
+        signUpError: action.payload,
       };
     case SIGNIN_SUCCESS:
       return {
         ...state,
+        signInError: null,
       };
     case SIGNIN_ERROR:
       return {
         ...state,
+        signInError: action.payload,
       };
     case SIGNOUT_SUCCESS:
       return {

@@ -46,7 +46,7 @@ class Sidebar extends Component {
       return (
         <div className="row align-content-center justify-items-center mt-5 mb-3 flex-column">
           <img
-            src={process.env.PUBLIC_URL + "/ic_launcher_coolrecipes.png"}
+            src={process.env.PUBLIC_URL + "/favicon.png"}
             className="rounded-circle figure-img img-fluid z-depth-1"
             alt=""
             style={{ width: "100px", height: "100px" }}

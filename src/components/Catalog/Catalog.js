@@ -4,9 +4,7 @@ import List from "./List";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import SearchBar from "./SearchBar";
-import {
-  fetchRecipes,
-} from "../../store/actions/recipesActions";
+import { fetchRecipes } from "../../store/actions/recipesActions";
 
 class Catalog extends Component {
   constructor(props) {
@@ -16,6 +14,16 @@ class Catalog extends Component {
 
     this.handleSort = this.handleSort.bind(this);
     this.handleSearch = this.handleSearch.bind(this);
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.filter && prevProps.filter[0] !== this.props.filter[0]) {
+      if (prevProps.isLoading) {
+        setTimeout(this.props.fetchRecipes(this.props.filter ? this.props.filter : null), 500);
+      } else {
+        this.props.fetchRecipes(this.props.filter ? this.props.filter : null);
+      }
+    }
   }
 
   static get propTypes() {

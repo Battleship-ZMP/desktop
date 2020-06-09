@@ -36,7 +36,8 @@ class SearchBar extends Component {
     this.props.handleSort([this.state.fieldPath, this.state.directionStr]);
   }
 
-  handleSearch() {
+  handleSearch(e) {
+    e.preventDefault();
     this.props.handleSearch(this.state.searchString);
   }
 
@@ -97,14 +98,16 @@ class SearchBar extends Component {
               />
             </MDBBtn>
           </MDBBtnGroup>
-          <div className="input-group md-form form-sm form-1 pl-0">
+          <form
+            className="input-group md-form form-sm form-1 pl-0"
+            onSubmit={this.handleSearch}
+          >
             <div className="input-group-prepend">
               <MDBBtn
                 color="teal"
                 className="m-0"
                 aria-label="Search"
                 type="submit"
-                onClick={this.handleSearch}
               >
                 Szukaj
               </MDBBtn>
@@ -117,7 +120,7 @@ class SearchBar extends Component {
               value={this.state.searchString}
               onChange={this.handleChange}
             />
-          </div>
+          </form>
         </MDBCol>
       </MDBRow>
     );

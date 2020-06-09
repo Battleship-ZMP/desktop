@@ -8,3 +8,15 @@ body {
   background-color: #009688 !important;
   border-color: #009688 !important;
 }
+
+.btn-toggle-pass {
+  border: none;
+  position: absolute;
+  top: 11px;
+  background: transparent;
+  right: 0;
+}
+
+.btn-toggle-pass.active {
+  color: #0099CC;
+}
